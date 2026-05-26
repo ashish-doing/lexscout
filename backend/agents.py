@@ -222,7 +222,7 @@ async def law_finder_node(state: LexScoutState) -> LexScoutState:
 
         serp_results = await bright_data_search(query, jurisdiction.lower())
 
-        if serp_results:
+        if serp_results and not any("error" in r for r in serp_results):
             parse_prompt = f"""You are a legal research assistant.
 Below are web-search results from legal databases about {state['category']} laws in {jurisdiction}.
 
