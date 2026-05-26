@@ -51,7 +51,7 @@ if not _GEMINI_API_KEY:
     logger.warning("GEMINI_API_KEY not set — Gemini calls will fail at runtime.")
 
 _client: Optional[genai.Client] = None
-_GEMINI_MODEL = "gemini-1.5-flash"
+_GEMINI_MODEL = "gemini-2.0-flash"
 
 
 def _get_client() -> genai.Client:
@@ -216,7 +216,7 @@ async def law_finder_node(state: LexScoutState) -> LexScoutState:
         query = f"{state['category']} law act regulations {jurisdiction} {site_hint}"
         targets = [site_hint] if site_hint else []
 
-        serp_results = await bright_data_search(query, targets)
+        serp_results = await bright_data_search(query, jurisdiction.lower())
 
         if serp_results:
             parse_prompt = f"""You are a legal research assistant.
