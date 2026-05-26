@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexScout — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111114;
+    --surface2: #18181d;
+    --border: #ffffff0f;
+    --accent: #00d4ff;
+    --accent2: #7b61ff;
+    --accent3: #ff6b6b;
+    --green: #00e5a0;
+    --amber: #ffb340;
+    --text: #f0f0f5;
+    --muted: #6b6b80;
+    --muted2: #3a3a4a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    height: 100%; overflow: hidden;
+  }
+
+  /* noise */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4;
+  }
+
+  /* ─── DECK WRAPPER ─── */
+  #deck {
+    width: 100vw; height: 100vh;
+    position: relative;
+  }
+
+  /* ─── SLIDES ─── */
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1; transform: translateX(0);
+    pointer-events: all;
+  }
+
+  .slide.exit {
+    opacity: 0; transform: translateX(-60px);
+  }
+
+  /* ─── SLIDE GRID BG ─── */
+  .slide::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+  }
+
+  /* ─── NAV BAR ─── */
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,10,0.85);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 14px; letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #fff, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .nav-dots {
+    display: flex; gap: 8px; align-items: center;
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--muted2);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+
+  .nav-dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    border-color: var(--accent);
+  }
+
+  .nav-arrows {
+    display: flex; gap: 8px;
+  }
+
+  .nav-arrow {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-arrow:hover { border-color: var(--accent); color: var(--accent); }
+
+  .slide-counter {
+    font-size: 11px; color: var(--muted); letter-spacing: 1px;
+    min-width: 48px; text-align: right;
+  }
+
+  /* ─── COMMON SLIDE ELEMENTS ─── */
+  .slide-inner {
+    flex: 1;
+    display: flex; flex-direction: column;
+    padding: 56px 80px 80px;
+    position: relative; z-index: 1;
+  }
+
+  .slide-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.2);
+    padding: 5px 14px; border-radius: 20px;
+    background: rgba(0,212,255,0.05);
+    margin-bottom: 28px;
+    align-self: flex-start;
+  }
+
+  .slide-tag::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .slide-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -1.5px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .slide-body { flex: 1; }
+
+  /* ─── SLIDE 1: PROBLEM ─── */
+  #slide1 .slide-title { font-size: clamp(40px,5vw,68px); }
+
+  .problem-statement {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: clamp(18px,2.2vw,26px);
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 600px;
+    margin-bottom: 48px;
+  }
+
+  .problem-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 700px;
+  }
+
+  .pstat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .pstat-num {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 36px; color: var(--accent3);
+    margin-bottom: 6px;
+    letter-spacing: -1px;
+  }
+
+  .pstat-label {
+    font-size: 12px; color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .slide1-accent {
+    position: absolute;
+    right: 80px; top: 50%; transform: translateY(-50%);
+    font-size: 180px; opacity: 0.04;
+    pointer-events: none;
+  }
+
+  /* ─── SLIDE 2: SOLUTION ─── */
+  #slide2 .slide-title { font-size: clamp(36px,4.5vw,60px); }
+
+  #slide2 .slide-title span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .solution-desc {
+    font-size: 15px; color: var(--muted);
+    line-height: 1.7; max-width: 560px; margin-bottom: 40px;
+  }
+
+  .solution-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 680px;
+  }
+
+  .sol-feat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+    transition: border-color 0.3s;
+  }
+
+  .sol-feat:hover { border-color: var(--accent); }
+
+  .sol-feat-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  .sol-feat-text {}
+  .sol-feat-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 4px; }
+  .sol-feat-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .slide2-screenshot {
+    position: absolute; right: 60px; top: 50%; transform: translateY(-45%);
+    width: 360px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08);
+  }
+
+  .ss-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+  .ss-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .ss-query {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+    font-size: 11px; color: var(--muted); line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .ss-result {
+    background: rgba(0,212,255,0.05);
+    border: 1px solid var(--border-glow, rgba(0,212,255,0.15));
+    border-radius: 8px; padding: 12px;
+    font-size: 11px; line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .ss-result-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+  .ss-result-content { color: var(--text); }
+
+  /* ─── SLIDE 3: HOW IT WORKS ─── */
+  #slide3 .slide-title { font-size: clamp(32px,4vw,52px); }
+
+  .flow-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 16px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .flow-node {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 18px;
+    min-width: 140px;
+    text-align: center;
+    flex-shrink: 0;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .flow-node:hover { border-color: var(--accent); transform: translateY(-4px); }
+
+  .flow-node-icon { font-size: 28px; margin-bottom: 10px; }
+  .flow-node-label {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 12px; color: #fff; margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+
+  .flow-node-sub { font-size: 10px; color: var(--muted); line-height: 1.4; }
+
+  .flow-arrow {
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    width: 40px; position: relative;
+  }
+
+  .flow-arrow::before {
+    content: '';
+    position: absolute; left: 2px; right: 2px; height: 1px;
+    background: linear-gradient(90deg, var(--muted2), var(--accent));
+  }
+
+  .flow-arrow::after {
+    content: '▶';
+    font-size: 8px; color: var(--accent);
+    position: absolute; right: 0;
+  }
+
+  .flow-user-node {
+    background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(123,97,255,0.12));
+    border-color: rgba(0,212,255,0.3);
+  }
+
+  .flow-out-node {
+    background: linear-gradient(135deg, rgba(0,229,160,0.1), rgba(0,212,255,0.1));
+    border-color: rgba(0,229,160,0.3);
+  }
+
+  .flow-agents-label {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); margin-top: 28px; margin-bottom: 12px;
+  }
+
+  .flow-agents-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+
+  .agent-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .agent-chip:hover { border-color: var(--accent2); }
+
+  .agent-chip-icon {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+
+  .agent-chip-name { font-size: 12px; color: var(--text); font-weight: 500; }
+  .agent-chip-desc { font-size: 10px; color: var(--muted); }
+
+  /* ─── SLIDE 4: TECH STACK ─── */
+  #slide4 .slide-title { font-size: clamp(32px,4vw,52px); }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 800px;
+  }
+
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .tech-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+  .tech-card.hero-tech {
+    border-color: rgba(0,212,255,0.4);
+    background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(123,97,255,0.06));
+    grid-column: span 3;
+    display: flex; align-items: center; gap: 28px;
+  }
+
+  .tech-logo-big {
+    font-size: 42px; flex-shrink: 0;
+  }
+
+  .tech-hero-text {}
+  .tech-hero-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: #fff; margin-bottom: 4px; }
+  .tech-hero-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .tech-hero-badge {
+    margin-top: 10px;
+    display: inline-block;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent); border: 1px solid rgba(0,212,255,0.3);
+    padding: 4px 12px; border-radius: 20px; background: rgba(0,212,255,0.08);
+  }
+
+  .tech-icon { font-size: 24px; margin-bottom: 10px; }
+  .tech-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 4px; }
+  .tech-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .tech-tag {
+    margin-top: 8px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--accent2); background: rgba(123,97,255,0.1);
+    border: 1px solid rgba(123,97,255,0.2);
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+  }
+
+  /* ─── SLIDE 5: IMPACT ─── */
+  #slide5 .slide-title { font-size: clamp(32px,4vw,52px); }
+
+  #slide5 .slide-title span {
+    background: linear-gradient(90deg, var(--green), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 900px;
+    margin-bottom: 32px;
+  }
+
+  .impact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .impact-num {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 32px; letter-spacing: -1px;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .impact-label { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .scale-section {}
+
+  .scale-title {
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px;
+  }
+
+  .scale-items {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+
+  .scale-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--text);
+    transition: border-color 0.2s;
+  }
+
+  .scale-item:hover { border-color: var(--green); }
+  .scale-item-icon { font-size: 16px; }
+
+  .closing-line {
+    margin-top: 28px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: clamp(16px,2vw,22px);
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .closing-line span { color: var(--accent); font-style: normal; }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- ═══════════════ SLIDE 1: PROBLEM ═══════════════ -->
+  <div class="slide active" id="slide1">
+    <div class="slide-inner">
+      <div class="slide-tag">The Problem</div>
+      <h1 class="slide-title">Justice is a<br>privilege. Not<br>a right.</h1>
+      <div class="slide-body">
+        <p class="problem-statement">Millions face legal violations daily — but most never act. The system is too complex, too expensive, and too opaque.</p>
+        <div class="problem-stats">
+          <div class="pstat">
+            <div class="pstat-num">85%</div>
+            <div class="pstat-label">of legal violations in India go unreported due to lack of awareness</div>
+          </div>
+          <div class="pstat">
+            <div class="pstat-num">$300+</div>
+            <div class="pstat-label">average cost of a single legal consultation — unaffordable for most</div>
+          </div>
+          <div class="pstat">
+            <div class="pstat-num">40M+</div>
+            <div class="pstat-label">pending cases in Indian courts — citizens don't know where to start</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide1-accent">⚖</div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 2: SOLUTION ═══════════════ -->
+  <div class="slide" id="slide2">
+    <div class="slide-inner">
+      <div class="slide-tag">The Solution</div>
+      <h1 class="slide-title">Meet <span>LexScout</span>.<br>Your AI Legal<br>Intelligence Agent.</h1>
+      <div class="slide-body" style="display:flex;flex-direction:column">
+        <p class="solution-desc">Describe your situation in plain language. LexScout identifies the exact laws violated, finds relevant case precedents, drafts your complaint, and connects you to legal aid — in seconds.</p>
+        <div class="solution-features">
+          <div class="sol-feat">
+            <div class="sol-feat-icon" style="background:rgba(0,212,255,0.1)">📚</div>
+            <div class="sol-feat-text">
+              <div class="sol-feat-name">Law Discovery</div>
+              <div class="sol-feat-desc">Exact statutes matched to your scenario in real time</div>
+            </div>
+          </div>
+          <div class="sol-feat">
+            <div class="sol-feat-icon" style="background:rgba(123,97,255,0.1)">🏛</div>
+            <div class="sol-feat-text">
+              <div class="sol-feat-name">Case Precedents</div>
+              <div class="sol-feat-desc">Similar cases with outcomes to strengthen your position</div>
+            </div>
+          </div>
+          <div class="sol-feat">
+            <div class="sol-feat-icon" style="background:rgba(0,229,160,0.1)">✉</div>
+            <div class="sol-feat-text">
+              <div class="sol-feat-name">Auto-drafted Complaint</div>
+              <div class="sol-feat-desc">Ready-to-file legal letter tailored to jurisdiction</div>
+            </div>
+          </div>
+          <div class="sol-feat">
+            <div class="sol-feat-icon" style="background:rgba(255,107,107,0.1)">🤝</div>
+            <div class="sol-feat-text">
+              <div class="sol-feat-name">Legal Aid Finder</div>
+              <div class="sol-feat-desc">Free legal resources and support near you</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide2-screenshot">
+      <div class="ss-bar">
+        <div class="ss-dot" style="background:#ff5f56"></div>
+        <div class="ss-dot" style="background:#ffbd2e"></div>
+        <div class="ss-dot" style="background:#27c93f"></div>
+      </div>
+      <div class="ss-query">My employer withheld my salary for 3 months and is threatening termination...</div>
+      <div class="ss-result">
+        <div class="ss-result-label">⚖ Law Found</div>
+        <div class="ss-result-content">Payment of Wages Act, 1936 · Section 5</div>
+      </div>
+      <div class="ss-result">
+        <div class="ss-result-label">🏛 Precedent</div>
+        <div class="ss-result-content">Sharma vs Reliance (2021) · Worker awarded full wages + damages</div>
+      </div>
+      <div class="ss-result" style="background:rgba(0,229,160,0.06);border-color:rgba(0,229,160,0.2)">
+        <div class="ss-result-label" style="color:var(--green)">✉ Complaint Ready</div>
+        <div class="ss-result-content">To The Labour Commissioner, Office of Labour...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 3: HOW IT WORKS ═══════════════ -->
+  <div class="slide" id="slide3">
+    <div class="slide-inner">
+      <div class="slide-tag">Architecture</div>
+      <h1 class="slide-title">5 AI Agents.<br>One Legal Plan.</h1>
+      <div class="slide-body">
+        <div class="flow-container">
+          <div class="flow-node flow-user-node">
+            <div class="flow-node-icon">👤</div>
+            <div class="flow-node-label">User Input</div>
+            <div class="flow-node-sub">Natural language scenario + jurisdiction</div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-node">
+            <div class="flow-node-icon">🔍</div>
+            <div class="flow-node-label">Law Agent</div>
+            <div class="flow-node-sub">Scans statute databases via Bright Data</div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-node">
+            <div class="flow-node-icon">🏛</div>
+            <div class="flow-node-label">Precedent Agent</div>
+            <div class="flow-node-sub">Retrieves case law &amp; judgments</div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-node">
+            <div class="flow-node-icon">✍</div>
+            <div class="flow-node-label">Draft Agent</div>
+            <div class="flow-node-sub">Generates complaint letter</div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-node">
+            <div class="flow-node-icon">🤝</div>
+            <div class="flow-node-label">Aid Agent</div>
+            <div class="flow-node-sub">Locates legal aid resources</div>
+          </div>
+          <div class="flow-arrow"></div>
+          <div class="flow-node flow-out-node">
+            <div class="flow-node-icon">📋</div>
+            <div class="flow-node-label">Action Plan</div>
+            <div class="flow-node-sub">Complete legal strategy delivered</div>
+          </div>
+        </div>
+        <div class="flow-agents-label">Data Sources — Powered by Bright Data Web Data UNLOCKED</div>
+        <div class="flow-agents-row">
+          <div class="agent-chip">
+            <div class="agent-chip-icon" style="background:rgba(0,212,255,0.1)">🌐</div>
+            <div><div class="agent-chip-name">Legislative Databases</div><div class="agent-chip-desc">Live statute scraping</div></div>
+          </div>
+          <div class="agent-chip">
+            <div class="agent-chip-icon" style="background:rgba(123,97,255,0.1)">📰</div>
+            <div><div class="agent-chip-name">Court Records</div><div class="agent-chip-desc">Judgment portals</div></div>
+          </div>
+          <div class="agent-chip">
+            <div class="agent-chip-icon" style="background:rgba(0,229,160,0.1)">🏛</div>
+            <div><div class="agent-chip-name">Govt Portals</div><div class="agent-chip-desc">Official filing sites</div></div>
+          </div>
+          <div class="agent-chip">
+            <div class="agent-chip-icon" style="background:rgba(255,179,64,0.1)">📍</div>
+            <div><div class="agent-chip-name">Legal Aid Directories</div><div class="agent-chip-desc">DLSA & NGO networks</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 4: TECH STACK ═══════════════ -->
+  <div class="slide" id="slide4">
+    <div class="slide-inner">
+      <div class="slide-tag">Technology</div>
+      <h1 class="slide-title">Built on a<br>real-time data<br>foundation.</h1>
+      <div class="slide-body">
+        <div class="tech-grid">
+          <!-- Hero: Bright Data -->
+          <div class="tech-card hero-tech">
+            <div class="tech-logo-big">🌐</div>
+            <div class="tech-hero-text">
+              <div class="tech-hero-name">Bright Data — Web Data UNLOCKED</div>
+              <div class="tech-hero-desc">The backbone of LexScout. Bright Data's Web Scraper API powers real-time access to government legal portals, court databases, legislative archives, and legal aid directories across jurisdictions — structured, reliable, and at scale.</div>
+              <div class="tech-hero-badge">PRIMARY DATA INFRASTRUCTURE</div>
+            </div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🐍</div>
+            <div class="tech-name">FastAPI + Python</div>
+            <div class="tech-desc">High-performance async backend orchestrating all 5 AI agents</div>
+            <div class="tech-tag">Backend</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🧠</div>
+            <div class="tech-name">Claude Sonnet 4</div>
+            <div class="tech-desc">Legal reasoning, complaint drafting, and contextual analysis</div>
+            <div class="tech-tag">AI Engine</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🔗</div>
+            <div class="tech-name">MCP + Tool Use</div>
+            <div class="tech-desc">Structured agent workflows with tool-calling for live data retrieval</div>
+            <div class="tech-tag">Orchestration</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">⚡</div>
+            <div class="tech-name">Pure HTML/CSS/JS</div>
+            <div class="tech-desc">Zero-dependency frontend — instant load, any device, no framework</div>
+            <div class="tech-tag">Frontend</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🗄</div>
+            <div class="tech-name">Vector Search</div>
+            <div class="tech-desc">Semantic matching of user scenarios to statute and case embeddings</div>
+            <div class="tech-tag">Retrieval</div>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🛡</div>
+            <div class="tech-name">Jurisdiction Graph</div>
+            <div class="tech-desc">Multi-country legal knowledge graph — India, USA, EU</div>
+            <div class="tech-tag">Data Model</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 5: IMPACT ═══════════════ -->
+  <div class="slide" id="slide5">
+    <div class="slide-inner">
+      <div class="slide-tag">Impact & Scale</div>
+      <h1 class="slide-title">Democratizing<br><span>legal access</span><br>for billions.</h1>
+      <div class="slide-body">
+        <div class="impact-grid">
+          <div class="impact-card">
+            <div class="impact-num">1.4B</div>
+            <div class="impact-label">potential users in India alone</div>
+          </div>
+          <div class="impact-card">
+            <div class="impact-num">&lt;10s</div>
+            <div class="impact-label">from query to complete action plan</div>
+          </div>
+          <div class="impact-card">
+            <div class="impact-num">$0</div>
+            <div class="impact-label">cost to access your legal rights</div>
+          </div>
+          <div class="impact-card">
+            <div class="impact-num">3+</div>
+            <div class="impact-label">jurisdictions, day one</div>
+          </div>
+        </div>
+        <div class="scale-section">
+          <div class="scale-title">Scale Potential</div>
+          <div class="scale-items">
+            <div class="scale-item"><span class="scale-item-icon">🌍</span>Expand to 50+ countries via Bright Data's global web coverage</div>
+            <div class="scale-item"><span class="scale-item-icon">📱</span>WhatsApp & SMS-first interface for rural access</div>
+            <div class="scale-item"><span class="scale-item-icon">🏛</span>NGO & legal aid organization API partnerships</div>
+            <div class="scale-item"><span class="scale-item-icon">🔔</span>Proactive law change alerts for at-risk populations</div>
+            <div class="scale-item"><span class="scale-item-icon">💼</span>B2B: HR compliance, tenant rights, consumer protection</div>
+          </div>
+        </div>
+        <p class="closing-line">LexScout is not a legal chatbot. It's an<br><span>infrastructure for justice.</span></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+  <div class="nav-logo">⚖ LexScout</div>
+  <div class="nav-dots">
+    <div class="nav-dot active" onclick="goTo(0)"></div>
+    <div class="nav-dot" onclick="goTo(1)"></div>
+    <div class="nav-dot" onclick="goTo(2)"></div>
+    <div class="nav-dot" onclick="goTo(3)"></div>
+    <div class="nav-dot" onclick="goTo(4)"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span class="slide-counter" id="counter">01 / 05</span>
+    <div class="nav-arrows">
+      <div class="nav-arrow" onclick="prev()">←</div>
+      <div class="nav-arrow" onclick="next()">→</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let current = 0;
+  const total = 5;
+
+  function goTo(idx) {
+    if (idx === current) return;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.nav-dot');
+
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+
+    setTimeout(() => {
+      slides[current].classList.remove('exit');
+      current = idx;
+      slides[current].classList.add('active');
+      dots.forEach((d,i) => d.classList.toggle('active', i === current));
+      document.getElementById('counter').textContent =
+        String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    }, 80);
+  }
+
+  function next() { goTo((current + 1) % total); }
+  function prev() { goTo((current - 1 + total) % total); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev();
+  });
+
+  // Touch swipe
+  let touchX = 0;
+  document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+  });
+</script>
+</body>
+</html>

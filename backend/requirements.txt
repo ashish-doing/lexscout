@@ -1,0 +1,29 @@
+# ─────────────────────────────────────────────────
+#  LexScout — Legal Action Intelligence Agent
+#  Python 3.11 | requirements.txt (merged)
+# ─────────────────────────────────────────────────
+
+# Web framework
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+
+# LangGraph orchestration
+langgraph>=0.2.0
+langchain>=0.2.0
+langchain-core>=0.2.0
+
+# Gemini LLM (new unified SDK — replaces deprecated google-generativeai)
+google-genai>=1.0.0
+
+# Data validation
+pydantic>=2.7.0
+
+# HTTP clients (sync + async — both needed for Bright Data calls)
+httpx>=0.27.0
+aiohttp>=3.9.0
+
+# MCP server (Chat 2)
+mcp>=1.0.0
+
+# Environment variables
+python-dotenv>=1.0.0

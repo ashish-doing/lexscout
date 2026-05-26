@@ -1,0 +1,13 @@
+# railway.toml — Railway.app deployment configuration
+# Docs: https://docs.railway.app/reference/config-as-code
+
+[build]
+builder = "nixpacks"
+rootDirectory = "backend"
+
+[deploy]
+startCommand         = "uvicorn main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath      = "/health"
+healthcheckTimeout   = 30
+restartPolicyType    = "on_failure"
+restartPolicyMaxRetries = 3

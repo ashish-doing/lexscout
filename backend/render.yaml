@@ -1,0 +1,18 @@
+# render.yaml — Render.com Infrastructure-as-Code
+# Docs: https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: lexscout-api
+    runtime: python
+    plan: free                          # upgrade to starter for always-on
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false                     # set manually in Render dashboard
+      - key: ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.11.0"
