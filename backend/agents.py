@@ -236,7 +236,8 @@ Each element must follow this schema exactly:
 Return ONLY the JSON array, no prose."""
 
             try:
-                raw = await _gemini(parse_prompt)
+                raw = await _gemini(fallback_prompt)
+                logger.info("RAW LAWS RESPONSE: %s", raw[:300])
                 laws = _parse_json(raw, [])
                 if isinstance(laws, list):
                     all_laws.extend(laws)
