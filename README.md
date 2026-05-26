@@ -125,8 +125,8 @@ POST /query
 │  │    Agent 2      │                                                      │
 │  │   Law Finder    │                                                      │
 │  │                 │                                                      │
-│  │  bright_data_   │ ← Bright Data SERP API                              │
-│  │  search()       │   Targets: indiacode.nic.in                         │
+│  │  bright_data_   │ ← Bright Data SERP API                               │
+│  │  search()       │   Targets: indiacode.nic.in                          │
 │  │                 │            law.cornell.edu                           │
 │  │  + Gemini       │            eur-lex.europa.eu                         │
 │  │  → laws[]       │                                                      │
@@ -137,26 +137,26 @@ POST /query
 │  │    Agent 3      │                                                      │
 │  │ Precedent Hunter│                                                      │
 │  │                 │                                                      │
-│  │  bright_data_   │ ← Bright Data Web Unlocker                          │
-│  │  access()       │   Targets: indiankanoon.org                         │
+│  │  bright_data_   │ ← Bright Data Web Unlocker                           │
+│  │  access()       │   Targets: indiankanoon.org                          │
 │  │                 │            courtlistener.com                         │
 │  │  + Gemini       │            curia.europa.eu                           │
 │  │  → precedents[] │                                                      │
 │  └────────┬────────┘                                                      │
 │           │                                                               │
 │           ▼                                                               │
-│  ┌──────────────────────────────────────────────┐                        │
-│  │                  Agent 4                     │                        │
-│  │             Action Builder                   │                        │
-│  │                                              │                        │
-│  │  bright_data_extract()  ← Scraping Browser  │                        │
-│  │  → portal_url (live complaint filing link)   │                        │
-│  │                                              │                        │
-│  │  bright_data_interact() ← Browser Automation│                        │
-│  │  → legal_aid_contacts[] (structured orgs)    │                        │
-│  │                                              │                        │
-│  │  Gemini 1.5F → complaint_draft (letter)      │                        │
-│  └────────┬─────────────────────────────────────┘                        │
+│  ┌──────────────────────────────────────────────┐                         │
+│  │                  Agent 4                     │                         │
+│  │             Action Builder                   │                         │
+│  │                                              │                         │
+│  │  bright_data_extract()  ← Scraping Browser  │                          │
+│  │  → portal_url (live complaint filing link)   │                         │
+│  │                                              │                         │
+│  │  bright_data_interact() ← Browser Automation│                          │
+│  │  → legal_aid_contacts[] (structured orgs)    │                         │
+│  │                                              │                         │
+│  │  Gemini 1.5F → complaint_draft (letter)      │                         │
+│  └────────┬─────────────────────────────────────┘                         │
 │           │                                                               │
 │           ▼                                                               │
 │  ┌─────────────────┐                                                      │
@@ -175,8 +175,8 @@ POST /query
             ▼
 ┌───────────────────────────────────────────────────────────────────────────┐
 │                          Final JSON Response                              │
-│  laws[] · precedents[] · complaint_draft · portal_url · legal_aid[]      │
-│  executive_summary · next_steps[] · urgency · disclaimer                 │
+│  laws[] · precedents[] · complaint_draft · portal_url · legal_aid[]       │
+│  executive_summary · next_steps[] · urgency · disclaimer                  │
 └───────────────────────────────────────────────────────────────────────────┘
             │
             ▼
