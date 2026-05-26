@@ -94,6 +94,9 @@ async def bright_data_search(
         "india": "in", "us": "us", "uk": "gb",
         "eu": "de", "australia": "au", "canada": "ca",
     }
+    # Handle both string and list input
+    if isinstance(jurisdiction, list):
+        jurisdiction = jurisdiction[0] if jurisdiction else "global"
     country = country_map.get(jurisdiction.lower(), "us")
 
     endpoint = f"{BRIGHT_DATA_BASE}/serp/google/search"
