@@ -30,8 +30,6 @@ import os
 from typing import Any, Dict, List, Optional, TypedDict
 
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types as genai_types
 from langgraph.graph import END, START, StateGraph
 
 # ── Import real Bright Data implementations from Chat 2 ──────────────────
@@ -46,35 +44,35 @@ from tool_functions import (
 load_dotenv()
 logger = logging.getLogger("lexscout.agents")
 
-_GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-if not _GEMINI_API_KEY:
-    logger.warning("GEMINI_API_KEY not set — Gemini calls will fail at runtime.")
+from groq import Groq
 
-_client: Optional[genai.Client] = None
-_GEMINI_MODEL = "gemini-2.0-flash"
+_GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+if not _GROQ_API_KEY:
+    logger.warning("GROQ_API_KEY not set — LLM calls will fail at runtime.")
 
+_groq_client: Optional[Groq] = None
 
-def _get_client() -> genai.Client:
-    """Lazily initialise the Gemini client singleton."""
-    global _client
-    if _client is None:
-        _client = genai.Client(api_key=_GEMINI_API_KEY)
-    return _client
-
+def _get_client() -> Groq:
+    global _groq_client
+    if _groq_client is None:
+        _groq_client = Groq(api_key=_GROQ_API_KEY)
+    return _groq_client
 
 async def _gemini(prompt: str) -> str:
-    """Async call to Gemini via the google-genai SDK."""
+    """LLM call via Groq (drop-in replacement for Gemini)."""
+    import asyncio
     client = _get_client()
-    response = await client.aio.models.generate_content(
-        model=_GEMINI_MODEL,
-        contents=prompt,
-        config=genai_types.GenerateContentConfig(
+    loop = asyncio.get_event_loop()
+    response = await loop.run_in_executor(
+        None,
+        lambda: client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
-            max_output_tokens=4096,
-        ),
+            max_tokens=4096,
+        )
     )
-    return response.text
-
+    return response.choices[0].message.content
 
 # ═══════════════════════════════════════════════════════════════════════════
 #  STATE SCHEMA
@@ -538,9 +536,7 @@ Output the letter in plain text — ready to copy-paste into the portal."""
         logger.info("  Complaint draft generated (%d chars)", len(draft))
     except Exception as exc:
         logger.error("Complaint draft error: %s", exc)
-        state["complaint_draft"] = (
-            f"[Draft generation failed — please retry. Error: {exc}]"
-        )
+        state["complaint_draft"] = "[Complaint letter temporarily unavailable — please retry in 30 seconds.]"
         _append_error(state, f"Action Builder complaint draft: {exc}")
 
     return state
