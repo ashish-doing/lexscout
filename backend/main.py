@@ -52,8 +52,8 @@ async def lifespan(app: FastAPI):
     logger.info("╔══════════════════════════════════════════╗")
     logger.info("║   LexScout API  —  starting up           ║")
     logger.info("╚══════════════════════════════════════════╝")
-    if not os.getenv("GEMINI_API_KEY"):
-        logger.warning("⚠  GEMINI_API_KEY not set — requests will fail.")
+    if not os.getenv("GROQ_API_KEY"):
+        logger.warning("⚠  GROQ_API_KEY not set — requests will fail.")
     yield
     logger.info("LexScout API shutting down — goodbye.")
 
