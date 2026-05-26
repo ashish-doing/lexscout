@@ -100,12 +100,18 @@ def _parse_json(text: str, fallback: Any) -> Any:
     """Strips markdown fences then parses JSON. Returns fallback on error."""
     try:
         cleaned = text.strip()
-        if cleaned.startswith("```"):
+        # Strip ```json ... ``` or ``` ... ```
+        if "```" in cleaned:
             parts = cleaned.split("```")
-            cleaned = parts[1]
-            if cleaned.lower().startswith("json"):
-                cleaned = cleaned[4:]
-        return json.loads(cleaned.strip())
+            for part in parts:
+                part = part.strip()
+                if part.startswith("json"):
+                    part = part[4:].strip()
+                try:
+                    return json.loads(part)
+                except Exception:
+                    continue
+        return json.loads(cleaned)
     except Exception as exc:
         logger.debug("JSON parse failed (%s) — returning fallback.", exc)
         return fallback
