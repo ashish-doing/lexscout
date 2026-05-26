@@ -236,8 +236,7 @@ Each element must follow this schema exactly:
 Return ONLY the JSON array, no prose."""
 
             try:
-                raw = await _gemini(fallback_prompt)
-                logger.info("RAW LAWS RESPONSE: %s", raw[:300])
+                raw = await _gemini(parse_prompt)  # ← was fallback_prompt, wrong
                 laws = _parse_json(raw, [])
                 if isinstance(laws, list):
                     all_laws.extend(laws)
@@ -256,6 +255,7 @@ Return ONLY a JSON array — no markdown, no prose:
 
             try:
                 raw = await _gemini(fallback_prompt)
+                logger.info("RAW LAWS RESPONSE: %s", raw[:300])  # ← debug line here
                 laws = _parse_json(raw, [])
                 if isinstance(laws, list):
                     for law in laws:
@@ -264,7 +264,6 @@ Return ONLY a JSON array — no markdown, no prose:
             except Exception as exc:
                 logger.error("Law fallback error (%s): %s", jurisdiction, exc)
                 _append_error(state, f"Law Finder fallback error [{jurisdiction}]: {exc}")
-
     state["laws"] = all_laws
     logger.info("  Total laws found: %d", len(all_laws))
     return state
