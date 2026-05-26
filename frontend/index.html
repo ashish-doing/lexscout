@@ -1136,7 +1136,7 @@
       const card = document.createElement('div');
       card.className = 'aid-card';
       card.innerHTML = `
-        <div class="aid-name">${esc(aid.name)}</div>
+        <div class="aid-name">${esc(aid.name || aid.organization)}</div>
         ${aid.contact ? `<div class="aid-row"><span class="aid-icon">📞</span>${esc(aid.contact)}</div>` : ''}
         ${aid.address ? `<div class="aid-row"><span class="aid-icon">📍</span>${esc(aid.address)}</div>` : ''}
       `;
