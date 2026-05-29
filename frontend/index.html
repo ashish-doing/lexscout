@@ -723,6 +723,26 @@
     .results-header { flex-direction: column; align-items: flex-start; gap: 6px; }
     .portal-card { flex-direction: column; gap: 16px; }
   }
+
+  /* ─── MIC BUTTON ─── */
+#micBtn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted); font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; flex-shrink: 0; align-self: flex-end; margin-bottom: 2px;
+}
+#micBtn:hover { border-color: var(--accent); color: var(--accent); }
+#micBtn.recording {
+  border-color: #ff4444; color: #ff4444;
+  animation: pulse-ring 1s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(255,68,68,0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(255,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+}
 </style>
 </head>
 <body>
@@ -761,7 +781,10 @@
         <option value="USA">🇺🇸 USA</option>
         <option value="EU">🇪🇺 EU</option>
       </select>
-      <button class="search-btn" id="searchBtn" onclick="runQuery()">Analyze ›</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="micBtn" title="Voice input">🎤</button>
+        <button class="search-btn" id="searchBtn" onclick="runQuery()">Analyze ›</button>
+      </div>
     </div>
   </div>
 
@@ -1230,6 +1253,60 @@
   document.getElementById('queryInput').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runQuery();
   });
+
+  // ─── SPEECHMATICS VOICE INPUT ───
+  const SPEECHMATICS_KEY = "ZfZZLz2ZQDq9ejDiXhUYcxjSiFYXAh1x";
+  let mediaRecorder = null;
+
+  document.getElementById('micBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('micBtn');
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop(); return;
+    }
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      alert('Microphone access denied. Please allow microphone and try again.'); return;
+    }
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+    btn.classList.add('recording');
+
+    const ws = new WebSocket(`wss://eu2.rt.speechmatics.com/v2?jwt=${SPEECHMATICS_KEY}`);
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({
+        message: 'StartRecognition',
+        transcription_config: { language: 'en', operating_point: 'enhanced' },
+        audio_format: { type: 'file' }
+      }));
+      mediaRecorder.start(250);
+    };
+
+    mediaRecorder.ondataavailable = e => {
+      if (ws.readyState === WebSocket.OPEN && e.data.size > 0) ws.send(e.data);
+    };
+
+    ws.onmessage = e => {
+      const msg = JSON.parse(e.data);
+      if (msg.message === 'AddTranscript' && msg.metadata?.transcript) {
+        const ta = document.getElementById('queryInput');
+        ta.value = (ta.value + ' ' + msg.metadata.transcript).trim();
+      }
+    };
+
+    mediaRecorder.onstop = () => {
+      btn.classList.remove('recording');
+      stream.getTracks().forEach(t => t.stop());
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ message: 'EndOfStream', last_seq_no: 0 }));
+        ws.close();
+      }
+    };
+
+    ws.onerror = () => { btn.classList.remove('recording'); mediaRecorder.stop(); };
+  });
+
 </script>
 </body>
 </html>
