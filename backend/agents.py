@@ -74,6 +74,38 @@ async def _gemini(prompt: str) -> str:
     )
     return response.choices[0].message.content
 
+
+async def _aiml(prompt: str) -> str:
+    """
+    Executive-summary LLM call via AI/ML API (Mistral-7B-Instruct-v0.2).
+    Used exclusively in synthesizer_node.
+    Raises on any HTTP or API error so the caller can fall back to _gemini().
+    """
+    import httpx
+
+    api_key = os.getenv("AIML_API_KEY", "")
+    if not api_key:
+        raise ValueError("AIML_API_KEY not set in environment")
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        resp = await client.post(
+            "https://api.aimlapi.com/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "mistralai/Mistral-7B-Instruct-v0.2",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.2,
+                "max_tokens": 1024,
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return data["choices"][0]["message"]["content"]
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 #  STATE SCHEMA
 # ═══════════════════════════════════════════════════════════════════════════
@@ -586,13 +618,22 @@ Return ONLY a JSON object — no markdown, no prose:
   "disclaimer": "This analysis is AI-generated for informational purposes only and does not constitute legal advice. Consult a qualified lawyer before taking action."
 }}"""
 
+    # Primary: AI/ML API (Mistral-7B) — used here for partner-prize eligibility.
+    # Fallback: Groq (_gemini) if AI/ML API key is missing or call fails.
     try:
-        raw = await _gemini(summary_prompt)
+        raw = await _aiml(summary_prompt)
         synthesis = _parse_json(raw, {})
-    except Exception as exc:
-        logger.error("Synthesizer Gemini error: %s", exc)
-        _append_error(state, f"Synthesizer error: {exc}")
-        synthesis = {}
+        logger.info("  Synthesizer: AI/ML API (Mistral-7B) succeeded")
+    except Exception as aiml_exc:
+        logger.warning("  Synthesizer: AI/ML API failed (%s) — falling back to Groq", aiml_exc)
+        _append_error(state, f"Synthesizer AIML error (Groq fallback used): {aiml_exc}")
+        try:
+            raw = await _gemini(summary_prompt)
+            synthesis = _parse_json(raw, {})
+        except Exception as groq_exc:
+            logger.error("  Synthesizer: Groq fallback also failed: %s", groq_exc)
+            _append_error(state, f"Synthesizer Groq fallback error: {groq_exc}")
+            synthesis = {}
 
     state["final_response"] = {
         "query":         state["query"],
