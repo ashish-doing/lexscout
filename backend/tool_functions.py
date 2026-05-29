@@ -1,6 +1,6 @@
 """
 LexScout — Legal Action Intelligence Agent
-Bright Data Tool Functions (Fixed for lexscout_serp + lexscout_browser)
+Bright Data Tool Functions — FIXED response parsing
 """
 
 import os
@@ -26,7 +26,7 @@ TIMEOUT_SECONDS = 60
 MAX_RETRIES     = 3
 RETRY_BACKOFF   = 2
 
-# ── Logging helpers ──────────────────────────────────────────────────────────
+# ── Logging ──────────────────────────────────────────────────────────────────
 
 CYAN="\033[96m"; GREEN="\033[92m"; YELLOW="\033[93m"; RED="\033[91m"
 BOLD="\033[1m";  RESET="\033[0m"
@@ -49,7 +49,7 @@ def _log_retry(attempt, max_retries, reason):
     print(f"{YELLOW}[{ts}] ⚠️  Retry {attempt}/{max_retries} — {reason}{RESET}")
 
 
-# ── 1. SERP API — bright_data_search ────────────────────────────────────────
+# ── 1. SERP API — bright_data_search ─────────────────────────────────────────
 
 async def bright_data_search(
     query: str,
@@ -57,8 +57,9 @@ async def bright_data_search(
     num_results: int = 10,
 ) -> list[dict[str, str]]:
     """
-    Bright Data SERP API — Google search for legal sources.
-    Uses POST /request with zone=lexscout_serp.
+    Bright Data SERP API — real Google results via BD.
+    BD returns: {"status_code": 200, "body": "{...json string...}"}
+    The body JSON has: {"organic": [{"link":..., "title":..., "description":...}]}
     """
     _log("SERP API", f"Google search | jurisdiction={jurisdiction}",
          f'query="{query}" | num_results={num_results}', color=CYAN)
@@ -72,8 +73,8 @@ async def bright_data_search(
     country = country_map.get(jurisdiction.lower(), "US")
 
     google_url = (
-        f"https://www.google.com/search?q={aiohttp.helpers.quote(query)}"
-        f"&num={num_results}&gl={country.lower()}&hl=en"
+        f"https://www.google.com/search"
+        f"?q={query.replace(' ', '+')}&gl={country.lower()}&hl=en"
     )
 
     endpoint = f"{BRIGHT_DATA_BASE}/request"
@@ -101,19 +102,26 @@ async def bright_data_search(
                         await asyncio.sleep(wait)
                         continue
                     resp.raise_for_status()
-                    data = await resp.json(content_type=None)
+                    # BD returns {"status_code": 200, "body": "<json string>", "headers": {...}}
+                    outer = await resp.json(content_type=None)
 
-            # BD SERP JSON format: data["organic"] list
+            # Parse the body string into JSON
+            body_raw = outer.get("body", "{}")
+            if isinstance(body_raw, str):
+                body = json.loads(body_raw)
+            else:
+                body = body_raw
+
             results = []
-            organic = data.get("organic", [])
+            organic = body.get("organic", [])
             for item in organic[:num_results]:
                 results.append({
                     "title":   item.get("title", ""),
                     "url":     item.get("link", item.get("url", "")),
-                    "snippet": item.get("snippet", item.get("description", "")),
+                    "snippet": item.get("description", item.get("snippet", "")),
                 })
 
-            _log_result("SERP API", "✅ SUCCESS", f"{len(results)} results returned")
+            _log_result("SERP API", "✅ SUCCESS", f"{len(results)} real BD results returned")
             return results
 
         except aiohttp.ClientResponseError as e:
@@ -130,21 +138,14 @@ async def bright_data_search(
     return [{"error": "max_retries", "message": "Exhausted all retries"}]
 
 
-# ── 2. WEB UNLOCKER — bright_data_access ────────────────────────────────────
-# Routes through lexscout_serp zone (works for plain HTML fetching too)
+# ── 2. WEB UNLOCKER — bright_data_access ─────────────────────────────────────
 
 async def bright_data_access(url: str) -> dict[str, Any]:
-    """
-    Fetch a legal portal page via Bright Data (using SERP zone as unlocker).
-    """
-    _log("WEB UNLOCKER", "Fetching legal portal (anti-bot bypass)", f"url={url}", color=GREEN)
+    """Fetch page via Bright Data SERP zone (plain HTML)."""
+    _log("WEB UNLOCKER", "Fetching legal portal", f"url={url}", color=GREEN)
 
     endpoint = f"{BRIGHT_DATA_BASE}/request"
-    payload = {
-        "zone":   SERP_ZONE,   # reuse SERP zone for plain fetches
-        "url":    url,
-        "format": "raw",
-    }
+    payload = {"zone": SERP_ZONE, "url": url, "format": "raw"}
     headers = {
         "Authorization": f"Bearer {BRIGHT_DATA_API_KEY}",
         "Content-Type":  "application/json",
@@ -162,11 +163,14 @@ async def bright_data_access(url: str) -> dict[str, Any]:
                         _log_retry(attempt, MAX_RETRIES, f"Rate-limited. Waiting {wait}s")
                         await asyncio.sleep(wait)
                         continue
-                    if resp.status == 403:
-                        _log_result("WEB UNLOCKER", "❌ FAILED", f"403 Forbidden for {url}")
-                        return {"error": "forbidden", "url": url, "status": 403, "html": ""}
                     resp.raise_for_status()
-                    html = await resp.text()
+                    # For raw format, BD returns the HTML directly
+                    content_type = resp.headers.get("content-type", "")
+                    if "json" in content_type:
+                        outer = await resp.json(content_type=None)
+                        html = outer.get("body", "") if isinstance(outer, dict) else str(outer)
+                    else:
+                        html = await resp.text()
 
             _log_result("WEB UNLOCKER", "✅ SUCCESS", f"{len(html):,} bytes from {url}")
             return {"url": url, "status": 200, "html": html, "text_length": len(html)}
@@ -185,23 +189,15 @@ async def bright_data_access(url: str) -> dict[str, Any]:
     return {"error": "max_retries", "url": url, "html": ""}
 
 
-# ── 3. SCRAPING BROWSER — bright_data_extract ───────────────────────────────
-# Browser API: connect via Playwright over WSS superproxy
+# ── 3. SCRAPING BROWSER — bright_data_extract ────────────────────────────────
 
 async def bright_data_extract(url: str, selectors: dict[str, str]) -> dict[str, Any]:
-    """
-    Bright Data Browser API — JS-rendered extraction.
-    Uses the /request endpoint with lexscout_browser zone.
-    """
+    """Bright Data Browser API — fetch JS-rendered page."""
     _log("SCRAPING BROWSER", "JS-rendered extraction",
          f"url={url} | fields={list(selectors.keys())}", color=YELLOW)
 
     endpoint = f"{BRIGHT_DATA_BASE}/request"
-    payload = {
-        "zone":   BROWSER_ZONE,
-        "url":    url,
-        "format": "raw",
-    }
+    payload = {"zone": BROWSER_ZONE, "url": url, "format": "raw"}
     headers = {
         "Authorization": f"Bearer {BRIGHT_DATA_API_KEY}",
         "Content-Type":  "application/json",
@@ -220,10 +216,14 @@ async def bright_data_extract(url: str, selectors: dict[str, str]) -> dict[str, 
                         await asyncio.sleep(wait)
                         continue
                     resp.raise_for_status()
-                    html = await resp.text()
+                    content_type = resp.headers.get("content-type", "")
+                    if "json" in content_type:
+                        outer = await resp.json(content_type=None)
+                        html = outer.get("body", "") if isinstance(outer, dict) else str(outer)
+                    else:
+                        html = await resp.text()
 
-            # Simple text extraction from HTML (no JS selector needed server-side)
-            extracted = {"raw_html": html[:2000], "url": url}
+            extracted = {"raw_html": html[:3000], "url": url}
             _log_result("SCRAPING BROWSER", "✅ SUCCESS", f"{len(html):,} bytes from {url}")
             return {"url": url, "extracted": extracted, "timestamp": datetime.utcnow().isoformat() + "Z"}
 
@@ -241,22 +241,15 @@ async def bright_data_extract(url: str, selectors: dict[str, str]) -> dict[str, 
     return {"error": "max_retries", "url": url, "extracted": {}}
 
 
-# ── 4. BROWSER AUTOMATION — bright_data_interact ────────────────────────────
+# ── 4. BROWSER AUTOMATION — bright_data_interact ─────────────────────────────
 
 async def bright_data_interact(url: str, actions: list[dict[str, Any]]) -> dict[str, Any]:
-    """
-    Bright Data Browser API — fetch page and return HTML for agent to parse.
-    Simplified: uses /request with browser zone instead of CDP websocket.
-    """
+    """Bright Data Browser API — fetch page for agent to parse."""
     _log("BROWSER AUTOMATION", f"Multi-step session | {len(actions)} actions",
          f"start_url={url}", color="\033[95m")
 
     endpoint = f"{BRIGHT_DATA_BASE}/request"
-    payload = {
-        "zone":   BROWSER_ZONE,
-        "url":    url,
-        "format": "raw",
-    }
+    payload = {"zone": BROWSER_ZONE, "url": url, "format": "raw"}
     headers = {
         "Authorization": f"Bearer {BRIGHT_DATA_API_KEY}",
         "Content-Type":  "application/json",
@@ -275,13 +268,18 @@ async def bright_data_interact(url: str, actions: list[dict[str, Any]]) -> dict[
                         await asyncio.sleep(wait)
                         continue
                     resp.raise_for_status()
-                    html = await resp.text()
+                    content_type = resp.headers.get("content-type", "")
+                    if "json" in content_type:
+                        outer = await resp.json(content_type=None)
+                        html = outer.get("body", "") if isinstance(outer, dict) else str(outer)
+                    else:
+                        html = await resp.text()
 
             _log_result("BROWSER AUTOMATION", "✅ SUCCESS", f"{len(html):,} bytes from {url}")
             return {
                 "url": url,
                 "actions_completed": len(actions),
-                "results": {"page_html": html[:3000]},
+                "results": {"page_html": html[:4000]},
                 "timestamp": datetime.utcnow().isoformat() + "Z",
             }
 
