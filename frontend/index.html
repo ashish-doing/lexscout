@@ -24,7 +24,6 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -68,9 +67,10 @@
   }
 
   /* ─── HEADER ─── */
+  /* FIX 1: tagline larger + white so it's actually visible */
   header {
     position: relative; z-index: 10;
-    padding: 28px 48px;
+    padding: 24px 48px;
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(20px);
@@ -89,9 +89,7 @@
 
   .logo-text {
     font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: -0.5px;
+    font-weight: 800; font-size: 22px; letter-spacing: -0.5px;
     background: linear-gradient(90deg, #fff 0%, var(--accent) 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
@@ -103,12 +101,13 @@
     letter-spacing: 1px; opacity: 0.8;
   }
 
+  /* FIX 1 — tagline: bigger, brighter, serif italic for personality */
   .header-tagline {
     font-family: 'Instrument Serif', serif;
     font-style: italic;
-    color: var(--muted);
-    font-size: 15px;
-    letter-spacing: 0.2px;
+    color: #c8c8d8;           /* was var(--muted) #6b6b80 — much brighter now */
+    font-size: 18px;          /* was 15px */
+    letter-spacing: 0.3px;
   }
 
   /* ─── HERO ─── */
@@ -122,7 +121,7 @@
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 24px;
+    color: var(--accent); margin-bottom: 28px;
     border: 1px solid var(--border-glow);
     padding: 6px 16px; border-radius: 20px;
     background: rgba(0,212,255,0.05);
@@ -136,7 +135,7 @@
 
   @keyframes pulse-dot {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
   }
 
   .hero-title {
@@ -145,7 +144,7 @@
     font-size: clamp(38px, 6vw, 64px);
     line-height: 1.05;
     letter-spacing: -2px;
-    margin-bottom: 20px;
+    margin-bottom: 28px;    /* FIX 2: was 20px → more gap before subtitle */
     color: #fff;
   }
 
@@ -154,10 +153,12 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
 
+  /* FIX 2 — hero subtitle: more top spacing */
   .hero-sub {
     color: var(--muted);
-    font-size: 15px; line-height: 1.7;
-    max-width: 520px; margin: 0 auto 48px;
+    font-size: 15px; line-height: 1.8;   /* was 1.7 */
+    max-width: 520px; margin: 0 auto 52px; /* was 48px */
+    padding-top: 4px;                      /* extra breathing room */
   }
 
   /* ─── SEARCH BOX ─── */
@@ -181,7 +182,7 @@
     box-shadow: 0 0 0 1px var(--accent), 0 0 40px rgba(0,212,255,0.12);
   }
 
-  .search-left { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 16px 0 16px; }
+  .search-left { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 16px 0; }
 
   .search-label {
     font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -201,7 +202,7 @@
 
   .search-right {
     display: flex; flex-direction: column; gap: 8px;
-    padding-bottom: 0;
+    padding-bottom: 8px;
   }
 
   .country-select {
@@ -213,8 +214,7 @@
     padding: 8px 12px;
     border-radius: 8px;
     outline: none; cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
+    appearance: none; -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b80'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -222,34 +222,48 @@
     min-width: 140px;
   }
 
+  /* FIX 5 — Analyze button: animated gradient shimmer */
   .search-btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent));
+    background-size: 200% 200%;
     border: none; color: #000;
     font-family: 'Syne', sans-serif; font-weight: 700;
     font-size: 13px; letter-spacing: 0.5px;
-    padding: 14px 28px; border-radius: 10px;
+    padding: 0 28px;
+    height: 42px;              /* explicit height to match mic button */
+    border-radius: 10px;
     cursor: pointer;
     transition: opacity 0.2s, transform 0.15s, box-shadow 0.3s;
     white-space: nowrap;
     box-shadow: 0 4px 20px rgba(0,212,255,0.25);
+    animation: btn-shimmer 3s ease infinite;
   }
 
-  .search-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,212,255,0.35); }
-  .search-btn:active { transform: translateY(0); }
-  .search-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  @keyframes btn-shimmer {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 
+  .search-btn:hover  { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,212,255,0.4); }
+  .search-btn:active { transform: translateY(0); }
+  .search-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; animation: none; }
+
+  /* FIX 3 — hint chips: centered, consistent wrap */
   .search-hints {
-    display: flex; gap: 8px; flex-wrap: wrap;
+    display: flex; gap: 10px; flex-wrap: wrap;
     margin-top: 16px;
+    justify-content: center;  /* was left-aligned */
   }
 
   .hint-chip {
     font-size: 11px; color: var(--muted);
     border: 1px solid var(--border);
-    padding: 5px 12px; border-radius: 20px;
+    padding: 6px 14px; border-radius: 20px;  /* slightly more padding */
     cursor: pointer;
     transition: all 0.2s;
     background: var(--surface);
+    white-space: nowrap;
   }
 
   .hint-chip:hover {
@@ -269,7 +283,7 @@
     background: var(--surface);
     border: 1px solid var(--border-glow);
     border-radius: 16px;
-    padding: 36px;
+    padding: 40px 36px;
     text-align: center;
   }
 
@@ -294,12 +308,79 @@
 
   .loading-sub {
     font-size: 12px; color: var(--muted);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.5px; margin-bottom: 28px;
+  }
+
+  /* ─── AGENT PROGRESS TRACK (enhancement) ─── */
+  .agent-track {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin-bottom: 8px;
+  }
+
+  .agent-node {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    min-width: 72px;
+  }
+
+  .agent-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--muted2);
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.4s;
+    position: relative;
+  }
+
+  .agent-circle.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(0,212,255,0.5);
+    animation: agent-pulse 1s ease-in-out infinite;
+  }
+
+  .agent-circle.done {
+    border-color: var(--green);
+    background: rgba(0,229,160,0.12);
+    box-shadow: 0 0 8px rgba(0,229,160,0.3);
+  }
+
+  @keyframes agent-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(0,212,255,0.4); }
+    50%       { box-shadow: 0 0 20px rgba(0,212,255,0.8); }
+  }
+
+  .agent-label {
+    font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--muted); text-align: center; line-height: 1.3;
+    transition: color 0.4s;
+  }
+
+  .agent-node.active .agent-label { color: var(--accent); }
+  .agent-node.done   .agent-label { color: var(--green); }
+
+  .agent-connector {
+    width: 32px; height: 2px; flex-shrink: 0;
+    background: var(--muted2); border-radius: 1px;
+    margin-bottom: 22px;
+    transition: background 0.4s;
+    position: relative; overflow: hidden;
+  }
+
+  .agent-connector.done::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--green);
+    animation: connector-fill 0.3s ease forwards;
+  }
+
+  @keyframes connector-fill {
+    from { width: 0; }
+    to   { width: 100%; }
   }
 
   .loading-steps {
     display: flex; gap: 8px; justify-content: center;
-    margin-top: 28px;
+    margin-top: 16px;
   }
 
   .loading-step {
@@ -309,14 +390,25 @@
   }
 
   .loading-step.active { background: var(--accent); transform: scale(1.3); }
-  .loading-step.done { background: var(--green); }
+  .loading-step.done   { background: var(--green); }
 
-  /* ─── RESULTS ─── */
+  /* ─── RESULTS — smooth fade-in (enhancement) ─── */
   #results {
     display: none;
     position: relative; z-index: 10;
     max-width: 900px; margin: 48px auto 80px;
     padding: 0 48px;
+    opacity: 0;
+    animation: results-fade 0.6s ease forwards;
+  }
+
+  #results.visible {
+    opacity: 1;
+  }
+
+  @keyframes results-fade {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .results-header {
@@ -326,20 +418,15 @@
 
   .results-title {
     font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 22px;
-    color: #fff;
+    font-weight: 700; font-size: 22px; color: #fff;
   }
 
-  .results-meta {
-    font-size: 11px; color: var(--muted);
-    letter-spacing: 0.5px;
-  }
+  .results-meta { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; }
 
-  /* ─── SECTION ─── */
+  /* ─── SECTIONS ─── */
   .result-section {
     margin-bottom: 16px;
     opacity: 0; transform: translateY(20px);
-    animation: none;
   }
 
   .result-section.visible {
@@ -361,15 +448,11 @@
     user-select: none;
   }
 
-  .section-header:hover {
-    border-color: var(--accent);
-    background: var(--surface2);
-  }
+  .section-header:hover { border-color: var(--accent); background: var(--surface2); }
 
   .section-header.open {
     border-color: var(--accent);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0; border-bottom-right-radius: 0;
     border-bottom-color: var(--border);
   }
 
@@ -380,8 +463,6 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; flex-shrink: 0;
   }
-
-  .section-title-block {}
 
   .section-number {
     font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -398,11 +479,7 @@
     padding: 3px 10px; border-radius: 20px;
   }
 
-  .section-chevron {
-    font-size: 12px; color: var(--muted);
-    transition: transform 0.3s;
-  }
-
+  .section-chevron { font-size: 12px; color: var(--muted); transition: transform 0.3s; }
   .section-header.open .section-chevron { transform: rotate(180deg); }
 
   .section-body {
@@ -411,12 +488,10 @@
     background: var(--surface);
     border: 1px solid var(--accent);
     border-top: none;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
   }
 
   .section-body.open { max-height: 2000px; }
-
   .section-inner { padding: 24px; }
 
   /* ─── LAW CARDS ─── */
@@ -427,54 +502,31 @@
   }
 
   .law-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
     transition: border-color 0.2s, transform 0.2s;
   }
 
   .law-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
-  .law-card-header {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 14px;
-  }
-
+  .law-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .law-flag { font-size: 22px; flex-shrink: 0; }
 
-  .law-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 14px;
-    color: #fff; line-height: 1.3;
-  }
+  .law-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: #fff; line-height: 1.3; }
+  .law-article { font-size: 11px; color: var(--accent); letter-spacing: 0.5px; margin-top: 2px; }
+  .law-covers { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
 
-  .law-article {
-    font-size: 11px; color: var(--accent);
-    letter-spacing: 0.5px; margin-top: 2px;
-  }
-
-  .law-covers {
-    font-size: 12px; color: var(--muted);
-    line-height: 1.6; margin-bottom: 14px;
-  }
-
-  .law-timeline {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 10px; letter-spacing: 0.5px;
-  }
+  .law-timeline { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 0.5px; }
 
   .law-year {
     color: var(--muted); background: var(--surface);
-    padding: 3px 8px; border-radius: 4px;
-    border: 1px solid var(--border);
+    padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);
   }
 
   .law-timeline-bar {
     flex: 1; height: 2px;
     background: linear-gradient(90deg, var(--muted2), var(--accent));
-    border-radius: 2px;
-    position: relative;
+    border-radius: 2px; position: relative;
   }
 
   .law-timeline-bar::after {
@@ -485,102 +537,65 @@
   }
 
   .law-amended {
-    color: var(--accent);
-    background: rgba(0,212,255,0.08);
-    padding: 3px 8px; border-radius: 4px;
-    border: 1px solid var(--border-glow);
+    color: var(--accent); background: rgba(0,212,255,0.08);
+    padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border-glow);
   }
 
   .law-changed {
     font-size: 11px; color: var(--muted);
     margin-top: 10px; padding-top: 10px;
-    border-top: 1px solid var(--border);
-    font-style: italic;
+    border-top: 1px solid var(--border); font-style: italic;
   }
 
-  /* ─── PRECEDENTS TIMELINE ─── */
-  .precedents-timeline {
-    position: relative;
-    padding-left: 32px;
-  }
+  /* ─── PRECEDENTS ─── */
+  .precedents-timeline { position: relative; padding-left: 32px; }
 
   .precedents-timeline::before {
     content: ''; position: absolute;
-    left: 10px; top: 8px; bottom: 8px;
-    width: 1px;
+    left: 10px; top: 8px; bottom: 8px; width: 1px;
     background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
   }
 
-  .precedent-item {
-    position: relative; margin-bottom: 24px;
-  }
+  .precedent-item { position: relative; margin-bottom: 24px; }
 
   .precedent-item::before {
     content: ''; position: absolute;
     left: -26px; top: 6px;
     width: 10px; height: 10px; border-radius: 50%;
-    background: var(--accent);
-    border: 2px solid var(--bg);
+    background: var(--accent); border: 2px solid var(--bg);
     box-shadow: 0 0 8px rgba(0,212,255,0.5);
   }
 
-  .precedent-year {
-    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 6px;
-  }
-
-  .precedent-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 14px; color: #fff;
-    margin-bottom: 6px;
-  }
+  .precedent-year { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .precedent-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 6px; }
 
   .precedent-outcome {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 11px; color: #000; font-weight: 600;
-    background: var(--green); padding: 3px 10px; border-radius: 20px;
-    margin-bottom: 8px;
+    background: var(--green); padding: 3px 10px; border-radius: 20px; margin-bottom: 8px;
   }
 
-  .precedent-relevance {
-    font-size: 12px; color: var(--muted); line-height: 1.6;
-  }
+  .precedent-relevance { font-size: 12px; color: var(--muted); line-height: 1.6; }
 
-  /* ─── COMPLAINT LETTER ─── */
-  .complaint-toolbar {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .complaint-label {
-    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--muted);
-  }
+  /* ─── COMPLAINT ─── */
+  .complaint-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .complaint-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
 
   .copy-btn {
     display: flex; align-items: center; gap: 8px;
-    background: rgba(0,212,255,0.1);
-    border: 1px solid var(--border-glow);
-    color: var(--accent);
-    font-family: 'DM Mono', monospace; font-size: 12px;
-    padding: 8px 16px; border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: rgba(0,212,255,0.1); border: 1px solid var(--border-glow);
+    color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s;
   }
 
-  .copy-btn:hover { background: rgba(0,212,255,0.2); }
+  .copy-btn:hover  { background: rgba(0,212,255,0.2); }
   .copy-btn.copied { color: var(--green); border-color: var(--green); background: rgba(0,229,160,0.1); }
 
   .complaint-text {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px;
-    font-size: 13px; line-height: 1.8;
-    color: var(--text);
-    white-space: pre-wrap;
-    max-height: 380px;
-    overflow-y: auto;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px;
+    font-size: 13px; line-height: 1.8; color: var(--text);
+    white-space: pre-wrap; max-height: 380px; overflow-y: auto;
     font-family: 'DM Mono', monospace;
   }
 
@@ -590,31 +605,20 @@
 
   /* ─── PORTAL ─── */
   .portal-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
     display: flex; align-items: center; justify-content: space-between;
   }
 
-  .portal-info {}
-  .portal-label {
-    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 6px;
-  }
-
-  .portal-url {
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px;
-    color: #fff;
-  }
+  .portal-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .portal-url   { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: #fff; }
 
   .portal-link {
     display: inline-flex; align-items: center; gap: 8px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #000; font-family: 'Syne', sans-serif;
     font-weight: 700; font-size: 13px;
-    padding: 12px 24px; border-radius: 10px;
-    text-decoration: none;
+    padding: 12px 24px; border-radius: 10px; text-decoration: none;
     transition: opacity 0.2s, transform 0.2s;
     box-shadow: 0 4px 20px rgba(0,212,255,0.25);
   }
@@ -622,96 +626,103 @@
   .portal-link:hover { opacity: 0.9; transform: translateY(-2px); }
 
   /* ─── LEGAL AID ─── */
-  .aid-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-  }
+  .aid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 
   .aid-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: border-color 0.2s;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; transition: border-color 0.2s;
   }
 
   .aid-card:hover { border-color: var(--accent2); }
-
-  .aid-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 14px; color: #fff;
-    margin-bottom: 12px;
-  }
-
-  .aid-row {
-    display: flex; align-items: flex-start; gap: 8px;
-    font-size: 12px; color: var(--muted);
-    margin-bottom: 6px; line-height: 1.5;
-  }
-
+  .aid-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 12px; }
+  .aid-row  { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
   .aid-icon { color: var(--accent2); flex-shrink: 0; font-size: 14px; }
 
   /* ─── ERROR ─── */
   #errorState {
-    display: none;
-    position: relative; z-index: 10;
-    max-width: 780px; margin: 48px auto 0;
-    padding: 0 48px;
+    display: none; position: relative; z-index: 10;
+    max-width: 780px; margin: 48px auto 0; padding: 0 48px;
   }
 
   .error-card {
-    background: var(--surface);
-    border: 1px solid rgba(255,107,107,0.3);
-    border-radius: 16px;
-    padding: 36px;
-    display: flex; gap: 20px;
-    align-items: flex-start;
+    background: var(--surface); border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 16px; padding: 36px;
+    display: flex; gap: 20px; align-items: flex-start;
   }
 
-  .error-icon { font-size: 28px; flex-shrink: 0; }
-
-  .error-title {
-    font-family: 'Syne', sans-serif; font-weight: 700;
-    font-size: 16px; color: var(--accent3); margin-bottom: 8px;
-  }
-
-  .error-msg { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .error-icon  { font-size: 28px; flex-shrink: 0; }
+  .error-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--accent3); margin-bottom: 8px; }
+  .error-msg   { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
   .retry-btn {
     display: inline-block; margin-top: 16px;
     background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3);
     color: var(--accent3); font-family: 'Syne', sans-serif;
     font-weight: 700; font-size: 13px;
-    padding: 10px 20px; border-radius: 8px;
-    cursor: pointer; transition: all 0.2s;
+    padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s;
   }
 
   .retry-btn:hover { background: rgba(255,107,107,0.2); }
 
-  /* ─── STATS BAR ─── */
+  /* ─── FIX 4: STATS BAR — full width, evenly spaced, centered ─── */
   .stats-bar {
     position: relative; z-index: 10;
     border-top: 1px solid var(--border);
-    padding: 20px 48px;
-    display: flex; align-items: center; gap: 40px;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;   /* center the whole group */
+    gap: 0;
     margin-top: 40px;
   }
 
-  .stat-item { display: flex; flex-direction: column; gap: 2px; }
+  .stat-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    flex: 1;                   /* each item takes equal share */
+    text-align: center;
+  }
 
   .stat-num {
     font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: 20px; color: var(--accent);
+    font-size: 22px; color: var(--accent);
+    letter-spacing: -0.5px;
   }
 
   .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
 
-  .stats-sep { width: 1px; height: 32px; background: var(--border); }
+  .stats-sep { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
+
+  /* ─── FIX 5: MIC BUTTON — same height as Analyze, clear visible state ─── */
+  #micBtn {
+    width: 42px; height: 42px; border-radius: 10px;  /* matches btn height + radius */
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);        /* was var(--muted) — now visible white */
+    font-size: 17px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+
+  #micBtn:hover { border-color: var(--accent); background: rgba(0,212,255,0.08); color: var(--accent); }
+
+  #micBtn.recording {
+    border-color: #ff4444;
+    background: rgba(255, 68, 68, 0.12);
+    color: #ff4444;
+    animation: pulse-ring 1s ease-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(255,68,68,0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(255,68,68,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+  }
 
   /* ─── MOBILE ─── */
   @media (max-width: 680px) {
-    header { padding: 18px 20px; flex-direction: column; gap: 12px; text-align: center; }
+    header { padding: 18px 20px; flex-direction: column; gap: 10px; text-align: center; }
+    .header-tagline { font-size: 15px; }
     .hero { padding: 48px 20px 36px; }
     .search-container { padding: 0 20px; }
     .search-box { flex-direction: column; padding: 16px; }
@@ -719,30 +730,14 @@
     #results, #loadingState, #errorState { padding: 0 20px; }
     .laws-grid { grid-template-columns: 1fr; }
     .aid-cards { grid-template-columns: 1fr; }
-    .stats-bar { padding: 16px 20px; gap: 20px; flex-wrap: wrap; }
+    .stats-bar { padding: 16px 20px; gap: 0; flex-wrap: wrap; }
+    .stat-item { min-width: 50%; margin-bottom: 12px; }
+    .stats-sep { display: none; }
     .results-header { flex-direction: column; align-items: flex-start; gap: 6px; }
     .portal-card { flex-direction: column; gap: 16px; }
+    .agent-track { flex-wrap: wrap; gap: 8px; }
+    .agent-connector { display: none; }
   }
-
-  /* ─── MIC BUTTON ─── */
-#micBtn {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--muted); font-size: 16px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s; flex-shrink: 0; align-self: flex-end; margin-bottom: 2px;
-}
-#micBtn:hover { border-color: var(--accent); color: var(--accent); }
-#micBtn.recording {
-  border-color: #ff4444; color: #ff4444;
-  animation: pulse-ring 1s ease-out infinite;
-}
-@keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(255,68,68,0.4); }
-  70%  { box-shadow: 0 0 0 10px rgba(255,68,68,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
-}
 </style>
 </head>
 <body>
@@ -782,7 +777,7 @@
         <option value="EU">🇪🇺 EU</option>
       </select>
       <div style="display:flex;gap:8px;align-items:center">
-        <button id="micBtn" title="Voice input">🎤</button>
+        <button id="micBtn" title="Voice input — click to record">🎤</button>
         <button class="search-btn" id="searchBtn" onclick="runQuery()">Analyze ›</button>
       </div>
     </div>
@@ -804,6 +799,35 @@
     <div class="loading-spinner"></div>
     <div class="loading-msg" id="loadingMsg">Scanning legal databases...</div>
     <div class="loading-sub" id="loadingSub">Connecting to statute repositories</div>
+
+    <!-- Agent progress track (enhancement) -->
+    <div class="agent-track" id="agentTrack">
+      <div class="agent-node" id="agent-0">
+        <div class="agent-circle">🔍</div>
+        <div class="agent-label">Classifier</div>
+      </div>
+      <div class="agent-connector" id="conn-0"></div>
+      <div class="agent-node" id="agent-1">
+        <div class="agent-circle">📚</div>
+        <div class="agent-label">Law Finder</div>
+      </div>
+      <div class="agent-connector" id="conn-1"></div>
+      <div class="agent-node" id="agent-2">
+        <div class="agent-circle">🏛</div>
+        <div class="agent-label">Precedent Hunter</div>
+      </div>
+      <div class="agent-connector" id="conn-2"></div>
+      <div class="agent-node" id="agent-3">
+        <div class="agent-circle">✍</div>
+        <div class="agent-label">Action Builder</div>
+      </div>
+      <div class="agent-connector" id="conn-3"></div>
+      <div class="agent-node" id="agent-4">
+        <div class="agent-circle">⚡</div>
+        <div class="agent-label">Synthesizer</div>
+      </div>
+    </div>
+
     <div class="loading-steps">
       <div class="loading-step" id="step0"></div>
       <div class="loading-step" id="step1"></div>
@@ -820,7 +844,7 @@
     <div class="error-icon">⚠</div>
     <div>
       <div class="error-title">Analysis Failed</div>
-      <div class="error-msg" id="errorMsg">Unable to connect to the LexScout API. Please ensure the backend is running on localhost:8000 and try again.</div>
+      <div class="error-msg" id="errorMsg">Unable to connect to the LexScout API.</div>
       <button class="retry-btn" onclick="runQuery()">Try Again</button>
     </div>
   </div>
@@ -833,7 +857,6 @@
     <div class="results-meta" id="resultsMeta"></div>
   </div>
 
-  <!-- Section 1: Laws -->
   <div class="result-section" id="sec-laws">
     <div class="section-header" onclick="toggleSection('laws-body', this)">
       <div class="section-left">
@@ -849,13 +872,10 @@
       </div>
     </div>
     <div class="section-body" id="laws-body">
-      <div class="section-inner">
-        <div class="laws-grid" id="lawsGrid"></div>
-      </div>
+      <div class="section-inner"><div class="laws-grid" id="lawsGrid"></div></div>
     </div>
   </div>
 
-  <!-- Section 2: Precedents -->
   <div class="result-section" id="sec-precedents">
     <div class="section-header" onclick="toggleSection('precedents-body', this)">
       <div class="section-left">
@@ -871,13 +891,10 @@
       </div>
     </div>
     <div class="section-body" id="precedents-body">
-      <div class="section-inner">
-        <div class="precedents-timeline" id="precedentsTimeline"></div>
-      </div>
+      <div class="section-inner"><div class="precedents-timeline" id="precedentsTimeline"></div></div>
     </div>
   </div>
 
-  <!-- Section 3: Complaint -->
   <div class="result-section" id="sec-complaint">
     <div class="section-header" onclick="toggleSection('complaint-body', this)">
       <div class="section-left">
@@ -905,7 +922,6 @@
     </div>
   </div>
 
-  <!-- Section 4: Portal -->
   <div class="result-section" id="sec-portal">
     <div class="section-header" onclick="toggleSection('portal-body', this)">
       <div class="section-left">
@@ -927,15 +943,12 @@
             <div class="portal-label">Official Government Portal</div>
             <div class="portal-url" id="portalUrl"></div>
           </div>
-          <a class="portal-link" id="portalLink" href="#" target="_blank" rel="noopener">
-            File Online ↗
-          </a>
+          <a class="portal-link" id="portalLink" href="#" target="_blank" rel="noopener">File Online ↗</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Section 5: Legal Aid -->
   <div class="result-section" id="sec-aid">
     <div class="section-header" onclick="toggleSection('aid-body', this)">
       <div class="section-left">
@@ -951,9 +964,7 @@
       </div>
     </div>
     <div class="section-body" id="aid-body">
-      <div class="section-inner">
-        <div class="aid-cards" id="aidCards"></div>
-      </div>
+      <div class="section-inner"><div class="aid-cards" id="aidCards"></div></div>
     </div>
   </div>
 </div>
@@ -984,26 +995,25 @@
 <script>
   // ─── FLAG MAP ───
   const FLAGS = {
-    'India': '🇮🇳', 'USA': '🇺🇸', 'EU': '🇪🇺',
-    'Maharashtra': '🇮🇳', 'Delhi': '🇮🇳', 'Karnataka': '🇮🇳',
-    'California': '🇺🇸', 'Federal': '🇺🇸',
-    'default': '🌍'
+    'India':'🇮🇳','USA':'🇺🇸','EU':'🇪🇺',
+    'Maharashtra':'🇮🇳','Delhi':'🇮🇳','Karnataka':'🇮🇳',
+    'California':'🇺🇸','Federal':'🇺🇸','default':'🌍'
   };
 
-  function getFlag(jurisdiction) {
-    for (const [key, val] of Object.entries(FLAGS)) {
-      if (jurisdiction && jurisdiction.includes(key)) return val;
+  function getFlag(j) {
+    for (const [k,v] of Object.entries(FLAGS)) {
+      if (j && j.includes(k)) return v;
     }
     return FLAGS.default;
   }
 
-  // ─── LOADING SEQUENCE ───
+  // ─── LOADING + AGENT TRACK ───
   const loadingMessages = [
-    { msg: 'Scanning legal databases...', sub: 'Indexing applicable statutes and acts' },
-    { msg: 'Finding precedents...', sub: 'Matching case law and court judgments' },
-    { msg: 'Drafting complaint...', sub: 'Composing jurisdiction-specific letter' },
-    { msg: 'Locating aid resources...', sub: 'Mapping nearby legal support services' },
-    { msg: 'Compiling your plan...', sub: 'Finalizing action strategy' }
+    { msg: 'Classifying your situation...', sub: 'Identifying legal category and jurisdiction' },
+    { msg: 'Finding applicable laws...', sub: 'Searching statute databases via Bright Data SERP' },
+    { msg: 'Hunting case precedents...', sub: 'Accessing court records via Bright Data Web Unlocker' },
+    { msg: 'Building your action plan...', sub: 'Extracting portal & legal aid via Scraping Browser' },
+    { msg: 'Synthesizing final report...', sub: 'Compiling complete legal strategy' }
   ];
 
   let loadingTimer = null;
@@ -1011,24 +1021,32 @@
 
   function startLoading() {
     loadingIndex = 0;
-    document.querySelectorAll('.loading-step').forEach(s => {
-      s.classList.remove('active', 'done');
-    });
+    document.querySelectorAll('.loading-step').forEach(s => s.classList.remove('active','done'));
+    document.querySelectorAll('.agent-node').forEach(n => n.classList.remove('active','done'));
+    document.querySelectorAll('.agent-connector').forEach(c => c.classList.remove('done'));
     setLoadingStep(0);
     loadingTimer = setInterval(() => {
       loadingIndex++;
-      if (loadingIndex < loadingMessages.length) {
-        setLoadingStep(loadingIndex);
-      }
+      if (loadingIndex < loadingMessages.length) setLoadingStep(loadingIndex);
     }, 1800);
   }
 
   function setLoadingStep(idx) {
-    const steps = document.querySelectorAll('.loading-step');
-    steps.forEach((s, i) => {
-      s.classList.remove('active', 'done');
+    // dot steps
+    document.querySelectorAll('.loading-step').forEach((s, i) => {
+      s.classList.remove('active','done');
       if (i < idx) s.classList.add('done');
       if (i === idx) s.classList.add('active');
+    });
+    // agent nodes
+    document.querySelectorAll('.agent-node').forEach((n, i) => {
+      n.classList.remove('active','done');
+      if (i < idx) n.classList.add('done');
+      if (i === idx) n.classList.add('active');
+    });
+    // connectors
+    document.querySelectorAll('.agent-connector').forEach((c, i) => {
+      c.classList.toggle('done', i < idx);
     });
     if (loadingMessages[idx]) {
       document.getElementById('loadingMsg').textContent = loadingMessages[idx].msg;
@@ -1043,18 +1061,18 @@
   // ─── HINT CHIPS ───
   function fillHint(el) {
     const hints = {
-      'Workplace harassment': 'My manager has been sexually harassing me at work for the past 6 months. HR has ignored my complaints and threatened my position.',
-      'Cyberstalking & online abuse': 'Someone has been posting my private photos and personal details on social media without consent and sending threatening messages to my phone.',
-      'Landlord refusing repairs': 'My landlord has refused to fix a broken roof and faulty wiring for 4 months despite repeated requests. The building is unsafe and I want legal remedy.',
-      'Consumer fraud by retailer': 'An online retailer delivered a counterfeit product and is refusing a refund or replacement despite my repeated complaints.',
-      'Wrongful termination': 'I was fired without cause or notice after reporting financial irregularities. The company withheld my last month salary and denied severance.',
-      'Data privacy breach': 'A company leaked my Aadhaar and financial data in a breach and has not notified me or taken responsibility despite the incident affecting thousands.'
+      'Workplace harassment':'My manager has been sexually harassing me at work for the past 6 months. HR has ignored my complaints and threatened my position.',
+      'Cyberstalking & online abuse':'Someone has been posting my private photos and personal details on social media without consent and sending threatening messages to my phone.',
+      'Landlord refusing repairs':'My landlord has refused to fix a broken roof and faulty wiring for 4 months despite repeated requests. The building is unsafe and I want legal remedy.',
+      'Consumer fraud by retailer':'An online retailer delivered a counterfeit product and is refusing a refund or replacement despite my repeated complaints.',
+      'Wrongful termination':'I was fired without cause or notice after reporting financial irregularities. The company withheld my last month salary and denied severance.',
+      'Data privacy breach':'A company leaked my Aadhaar and financial data in a breach and has not notified me or taken responsibility despite the incident affecting thousands.'
     };
     document.getElementById('queryInput').value = hints[el.textContent] || el.textContent;
     document.getElementById('queryInput').focus();
   }
 
-  // ─── TOGGLE SECTION ───
+  // ─── SECTION TOGGLE ───
   function toggleSection(bodyId, header) {
     const body = document.getElementById(bodyId);
     const isOpen = body.classList.contains('open');
@@ -1073,14 +1091,13 @@
   function copyLetter() {
     const text = document.getElementById('complaintText').textContent;
     navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('copyBtn');
       document.getElementById('copyText').textContent = 'Copied!';
       document.getElementById('copyIcon').textContent = '✓';
-      btn.classList.add('copied');
+      document.getElementById('copyBtn').classList.add('copied');
       setTimeout(() => {
         document.getElementById('copyText').textContent = 'Copy Letter';
         document.getElementById('copyIcon').textContent = '⎘';
-        btn.classList.remove('copied');
+        document.getElementById('copyBtn').classList.remove('copied');
       }, 2500);
     });
   }
@@ -1097,7 +1114,6 @@
   function renderResults(data) {
     const country = document.getElementById('countrySelect').value;
 
-    // Laws
     const lawsGrid = document.getElementById('lawsGrid');
     lawsGrid.innerHTML = '';
     const laws = data.laws || [];
@@ -1111,21 +1127,20 @@
           <span class="law-flag">${flag}</span>
           <div>
             <div class="law-name">${esc(law.law_name)}</div>
-            <div class="law-article">${esc(law.article || '')}</div>
+            <div class="law-article">${esc(law.article||'')}</div>
           </div>
         </div>
-        <div class="law-covers">${esc(law.covers || '')}</div>
+        <div class="law-covers">${esc(law.covers||'')}</div>
         <div class="law-timeline">
-          <span class="law-year">${esc(law.created || '—')}</span>
+          <span class="law-year">${esc(law.created||'—')}</span>
           <div class="law-timeline-bar"></div>
-          <span class="law-amended">↺ ${esc(law.last_amended || '—')}</span>
+          <span class="law-amended">↺ ${esc(law.last_amended||'—')}</span>
         </div>
-        ${law.what_changed ? `<div class="law-changed">${esc(law.what_changed)}</div>` : ''}
+        ${law.what_changed?`<div class="law-changed">${esc(law.what_changed)}</div>`:''}
       `;
       lawsGrid.appendChild(card);
     });
 
-    // Precedents
     const timeline = document.getElementById('precedentsTimeline');
     timeline.innerHTML = '';
     const precs = data.precedents || [];
@@ -1134,23 +1149,20 @@
       const item = document.createElement('div');
       item.className = 'precedent-item';
       item.innerHTML = `
-        <div class="precedent-year">${esc(p.year || '—')}</div>
+        <div class="precedent-year">${esc(p.year||'—')}</div>
         <div class="precedent-name">${esc(p.case_name)}</div>
         <div><span class="precedent-outcome">⚖ ${esc(p.outcome)}</span></div>
-        <div class="precedent-relevance">${esc(p.relevance || '')}</div>
+        <div class="precedent-relevance">${esc(p.relevance||'')}</div>
       `;
       timeline.appendChild(item);
     });
 
-    // Complaint
     document.getElementById('complaintText').textContent = data.action_plan?.complaint_draft || 'No complaint letter generated.';
 
-    // Portal
     const url = data.action_plan?.portal_url || '#';
     document.getElementById('portalUrl').textContent = url;
     document.getElementById('portalLink').href = url;
 
-    // Aid
     const aidCards = document.getElementById('aidCards');
     aidCards.innerHTML = '';
     const aids = data.action_plan?.legal_aid_contacts || [];
@@ -1159,43 +1171,34 @@
       const card = document.createElement('div');
       card.className = 'aid-card';
       card.innerHTML = `
-        <div class="aid-name">${esc(aid.name || aid.organization)}</div>
-        ${aid.contact ? `<div class="aid-row"><span class="aid-icon">📞</span>${esc(aid.contact)}</div>` : ''}
-        ${aid.address ? `<div class="aid-row"><span class="aid-icon">📍</span>${esc(aid.address)}</div>` : ''}
+        <div class="aid-name">${esc(aid.name||aid.organization)}</div>
+        ${aid.contact?`<div class="aid-row"><span class="aid-icon">📞</span>${esc(aid.contact)}</div>`:''}
+        ${aid.address?`<div class="aid-row"><span class="aid-icon">📍</span>${esc(aid.address)}</div>`:''}
       `;
       aidCards.appendChild(card);
     });
 
-    // Timestamp
     document.getElementById('resultsMeta').textContent = `Generated ${new Date().toLocaleTimeString()} · ${country}`;
   }
 
   function esc(str) {
     if (!str) return '';
     return String(str)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;');
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   // ─── MAIN QUERY ───
   async function runQuery() {
-    const query = document.getElementById('queryInput').value.trim();
+    const query   = document.getElementById('queryInput').value.trim();
     const country = document.getElementById('countrySelect').value;
+    if (!query) { document.getElementById('queryInput').focus(); return; }
 
-    if (!query) {
-      document.getElementById('queryInput').focus();
-      return;
-    }
-
-    // Reset state
     document.getElementById('results').style.display = 'none';
+    document.getElementById('results').classList.remove('visible');
     document.getElementById('errorState').style.display = 'none';
     document.getElementById('loadingState').style.display = 'block';
     document.getElementById('searchBtn').disabled = true;
-
-    // Remove visible class from all sections
     document.querySelectorAll('.result-section').forEach(s => s.classList.remove('visible'));
 
     startLoading();
@@ -1212,8 +1215,10 @@
       const data = await res.json();
       stopLoading();
 
-      // Mark all steps done
+      // Mark all done
       document.querySelectorAll('.loading-step').forEach(s => s.classList.add('done'));
+      document.querySelectorAll('.agent-node').forEach(n => n.classList.add('done'));
+      document.querySelectorAll('.agent-connector').forEach(c => c.classList.add('done'));
 
       setTimeout(() => {
         document.getElementById('loadingState').style.display = 'none';
@@ -1221,15 +1226,15 @@
 
         const resultsEl = document.getElementById('results');
         resultsEl.style.display = 'block';
+        // trigger fade-in animation
+        requestAnimationFrame(() => resultsEl.classList.add('visible'));
 
-        // Dramatic staggered reveal
         revealSection('sec-laws', 100);
         revealSection('sec-precedents', 350);
         revealSection('sec-complaint', 600);
         revealSection('sec-portal', 850);
         revealSection('sec-aid', 1100);
 
-        // Auto-open all sections
         setTimeout(() => {
           ['laws-body','precedents-body','complaint-body','portal-body','aid-body'].forEach((id, i) => {
             setTimeout(() => openSection(id), i * 200);
@@ -1243,7 +1248,7 @@
       stopLoading();
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('errorState').style.display = 'block';
-      document.getElementById('errorMsg').textContent = err.message || 'An unexpected error occurred. Please check your connection and try again.';
+      document.getElementById('errorMsg').textContent = err.message || 'An unexpected error occurred.';
     } finally {
       document.getElementById('searchBtn').disabled = false;
     }
@@ -1306,7 +1311,6 @@
 
     ws.onerror = () => { btn.classList.remove('recording'); mediaRecorder.stop(); };
   });
-
 </script>
 </body>
 </html>
