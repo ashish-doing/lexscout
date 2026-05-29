@@ -190,6 +190,8 @@ Respond with ONLY this JSON (no markdown, no prose):
 #  AGENT 2 — LAW FINDER
 # ═══════════════════════════════════════════════════════════════════════════
 
+# Kept for reference / future use — NOT injected into SERP query because
+# BD SERP strips site: operators, returning 0 results. (Chat 3 fix)
 _LAW_DB_SITE_HINTS: Dict[str, str] = {
     "India": "site:indiacode.nic.in OR site:legalaffairs.gov.in",
     "USA":   "site:law.cornell.edu OR site:uscode.house.gov",
@@ -214,11 +216,9 @@ async def law_finder_node(state: LexScoutState) -> LexScoutState:
     all_laws: List[Dict[str, Any]] = []
 
     for jurisdiction in state["jurisdictions"]:
-        # FIX 1: was `site_hint = _LAW_DB_SITE_hints = _LAW_DB_SITE_HINTS.get(...)`
-        # The extra `_LAW_DB_SITE_hints =` was a typo creating a spurious variable.
-        site_hint = _LAW_DB_SITE_HINTS.get(jurisdiction, "")
-        query = f"{state['category']} law act regulations {jurisdiction} {site_hint}"
-        targets = [site_hint] if site_hint else []
+        # FIX (Chat 3): BD SERP strips site: operators → 0 results.
+        # Use a plain descriptive query; no site: filter.
+        query = f"{state['category']} law act statutes {jurisdiction}"
 
         serp_results = await bright_data_search(query, jurisdiction.lower())
 
@@ -236,7 +236,7 @@ Each element must follow this schema exactly:
 Return ONLY the JSON array, no prose."""
 
             try:
-                raw = await _gemini(parse_prompt)  # ← was fallback_prompt, wrong
+                raw = await _gemini(parse_prompt)
                 laws = _parse_json(raw, [])
                 if isinstance(laws, list):
                     all_laws.extend(laws)
@@ -273,10 +273,19 @@ Return ONLY a JSON array — no markdown, no prose:
 #  AGENT 3 — PRECEDENT HUNTER
 # ═══════════════════════════════════════════════════════════════════════════
 
+# Retained for reference — superseded by SERP-based approach (Chat 3 fix).
+# bright_data_access() is blocked on these domains (returns ~98 bytes).
 _CASE_DB_URL_TEMPLATES: Dict[str, str] = {
     "India": "https://indiankanoon.org/search/?formInput={q}",
     "USA":   "https://www.courtlistener.com/?q={q}&type=o&order_by=score+desc",
     "EU":    "https://curia.europa.eu/juris/liste.jsf?language=en&num={q}",
+}
+
+# Site hints used in SERP query — BD SERP handles single site: filters correctly.
+_CASE_SITE_HINTS: Dict[str, str] = {
+    "India": "site:indiankanoon.org",
+    "USA":   "site:courtlistener.com",
+    "EU":    "site:curia.europa.eu",
 }
 
 _PRECEDENT_SCHEMA = """[
@@ -299,30 +308,30 @@ async def precedent_hunter_node(state: LexScoutState) -> LexScoutState:
     query_fragment = " ".join(law_names[:2]) if law_names else state["category"]
 
     for jurisdiction in state["jurisdictions"]:
-        url_template = _CASE_DB_URL_TEMPLATES.get(jurisdiction)
-        if not url_template:
-            continue
+        # FIX (Chat 3): bright_data_access() is blocked on case law sites (~98 bytes
+        # returned, no usable HTML). Switch to bright_data_search (SERP) and parse
+        # result snippets via Groq instead of scraping HTML.
+        site_hint = _CASE_SITE_HINTS.get(jurisdiction, "")
+        serp_query = (
+            f"{state['category']} case judgment {jurisdiction} {site_hint}"
+        ).strip()
 
-        search_url = url_template.replace(
-            "{q}", f"{state['category']} {query_fragment}".replace(" ", "+")
+        serp_results = await bright_data_search(
+            serp_query, jurisdiction.lower(), num_results=5
         )
 
-        # FIX 2: bright_data_access() returns dict {"html": ..., "status": ..., "url": ...}
-        # Original code treated it as a plain string — this caused silent empty results.
-        result = await bright_data_access(search_url)
-        page_content = result.get("html", "") if isinstance(result, dict) else ""
-
-        if page_content:
+        if serp_results and not any("error" in r for r in serp_results):
             parse_prompt = f"""You are a legal research assistant.
-Below is the content of a legal case-search results page for
+Below are SERP results (titles + snippets) from a case law search for
 {state['category']} cases in {jurisdiction}.
 
-Page content (first 3000 chars):
-{page_content[:3000]}
+Search results (JSON):
+{json.dumps(serp_results, indent=2)[:4000]}
 
-Extract up to 4 relevant cases and return ONLY a JSON array:
+Extract up to 4 real cases from these results and return ONLY a JSON array:
 {_PRECEDENT_SCHEMA.replace('<jurisdiction>', jurisdiction).replace('<category>', state['category'])}
 
+If a field is not present in the snippet, make a reasonable inference.
 Return ONLY the JSON array."""
             try:
                 raw = await _gemini(parse_prompt)
@@ -330,11 +339,11 @@ Return ONLY the JSON array."""
                 if isinstance(cases, list):
                     all_precedents.extend(cases)
             except Exception as exc:
-                logger.error("Precedent parse error (%s): %s", jurisdiction, exc)
-                _append_error(state, f"Precedent Hunter parse error [{jurisdiction}]: {exc}")
+                logger.error("Precedent SERP parse error (%s): %s", jurisdiction, exc)
+                _append_error(state, f"Precedent Hunter SERP parse error [{jurisdiction}]: {exc}")
 
         else:
-            logger.info("  No Web Unlocker content for %s — Gemini fallback", jurisdiction)
+            logger.info("  No SERP results for %s — Groq fallback", jurisdiction)
             fallback_prompt = f"""You are a legal research expert.
 Provide 3 real, landmark or widely-cited court cases related to
 {state['category']} in {jurisdiction}.
