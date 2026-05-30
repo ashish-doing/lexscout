@@ -51,7 +51,7 @@
   }
 
   .slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
-  .slide.exit { opacity: 0; transform: translateX(-60px); }
+  .slide.exit   { opacity: 0; transform: translateX(-60px); }
 
   .slide::before {
     content: '';
@@ -117,6 +117,7 @@
     position: relative; z-index: 1;
   }
 
+  /* FIX 1 — pill never stretches full width */
   .slide-tag {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
@@ -126,6 +127,7 @@
     background: rgba(0,212,255,0.05);
     margin-bottom: 24px;
     align-self: flex-start;
+    width: fit-content;          /* FIX 1 */
   }
 
   .slide-tag::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
@@ -141,46 +143,49 @@
 
   .slide-body { flex: 1; }
 
-  /* ─── SLIDE 1: PROBLEM ─── */
+  /* ══════════════════════════════
+     SLIDE 1 — PROBLEM
+  ══════════════════════════════ */
   #slide1 .slide-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
     gap: 0;
   }
 
-  #slide1 .slide-tag { grid-column: 1 / -1; }
-  #slide1 .slide-title { font-size: clamp(38px,4.5vw,62px); grid-column: 1; align-self: start; }
+  #slide1 .slide-tag   { grid-column: 1 / -1; }
+  /* FIX 2 — tighter title margin */
+  #slide1 .slide-title { font-size: clamp(38px,4.5vw,62px); grid-column: 1; align-self: start; margin-bottom: 8px; }
 
   .problem-right-accent {
     grid-column: 2;
-    grid-row: 2 / 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 160px;
-    opacity: 0.05;
-    user-select: none;
-    padding-left: 40px;
+    grid-row: 2 / 5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 160px; opacity: 0.05;
+    user-select: none; padding-left: 40px;
   }
 
+  /* FIX 2 — tighter statement margin */
   .problem-statement {
     font-family: 'Instrument Serif', serif;
     font-style: italic;
-    font-size: clamp(16px,1.8vw,22px);
+    font-size: clamp(15px,1.6vw,20px);
     color: var(--muted);
     line-height: 1.6;
     max-width: 520px;
-    margin-bottom: 36px;
+    margin-bottom: 12px;   /* was 36px */
     grid-column: 1;
   }
 
+  /* FIX 2 — stats pushed to bottom of remaining space */
   .problem-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     grid-column: 1;
-    align-self: start;
+    align-self: end;       /* was start */
+    margin-top: auto;      /* FIX 2 */
+    padding-bottom: 8px;   /* FIX 2 */
   }
 
   .pstat {
@@ -198,7 +203,9 @@
 
   .pstat-label { font-size: 11px; color: var(--muted); line-height: 1.5; }
 
-  /* ─── SLIDE 2: SOLUTION ─── */
+  /* ══════════════════════════════
+     SLIDE 2 — SOLUTION
+  ══════════════════════════════ */
   #slide2 .slide-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -207,7 +214,7 @@
     column-gap: 40px;
   }
 
-  #slide2 .slide-tag { grid-column: 1 / -1; }
+  #slide2 .slide-tag   { grid-column: 1 / -1; }
   #slide2 .slide-title { font-size: clamp(32px,3.8vw,52px); grid-column: 1; }
 
   #slide2 .slide-title span {
@@ -215,10 +222,7 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
 
-  .solution-left {
-    grid-column: 1;
-    display: flex; flex-direction: column;
-  }
+  .solution-left { grid-column: 1; display: flex; flex-direction: column; }
 
   .solution-desc {
     font-size: 13px; color: var(--muted);
@@ -234,8 +238,7 @@
   .sol-feat {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 12px; padding: 16px;
     display: flex; gap: 12px; align-items: flex-start;
     transition: border-color 0.3s;
   }
@@ -254,18 +257,14 @@
   .slide2-screenshot {
     grid-column: 2;
     grid-row: 2 / 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
 
   .slide2-screenshot-inner {
-    width: 100%;
-    max-width: 360px;
+    width: 100%; max-width: 360px;
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 16px; padding: 20px;
     box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(0,212,255,0.08);
   }
 
@@ -275,40 +274,46 @@
   .ss-query {
     background: var(--bg); border: 1px solid var(--border);
     border-radius: 8px; padding: 12px;
-    font-size: 11px; color: var(--muted); line-height: 1.5;
-    margin-bottom: 12px;
+    font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 12px;
   }
 
   .ss-result {
     background: rgba(0,212,255,0.05);
     border: 1px solid rgba(0,212,255,0.15);
     border-radius: 8px; padding: 12px;
-    font-size: 11px; line-height: 1.6;
-    margin-bottom: 8px;
+    font-size: 11px; line-height: 1.6; margin-bottom: 8px;
   }
 
   .ss-result-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
   .ss-result-content { color: var(--text); }
 
-  /* ─── SLIDE 3: ARCHITECTURE ─── */
+  /* ══════════════════════════════
+     SLIDE 3 — ARCHITECTURE
+  ══════════════════════════════ */
   #slide3 .slide-title { font-size: clamp(30px,3.8vw,50px); }
 
-  .flow-container {
+  /* FIX 3 — slide-body centered vertically */
+  #slide3 .slide-body {
     display: flex;
-    align-items: stretch;
-    gap: 0;
-    margin-top: 12px;
-    flex-wrap: nowrap;
-    width: 100%;
+    flex-direction: column;
     justify-content: center;
+    height: 100%;
   }
 
+  .flow-container {
+    display: flex; align-items: stretch;
+    gap: 0; flex-wrap: nowrap;
+    width: 100%; justify-content: center;
+    margin-top: 12px;
+  }
+
+  /* FIX 3 — tighter nodes */
   .flow-node {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 18px 14px;
-    width: 130px;
+    padding: 14px 10px;    /* was 18px 14px */
+    width: 118px;          /* was 130px */
     flex-shrink: 0;
     text-align: center;
     transition: border-color 0.3s, transform 0.3s;
@@ -316,7 +321,8 @@
 
   .flow-node:hover { border-color: var(--accent); transform: translateY(-4px); }
 
-  .flow-node-icon { font-size: 24px; margin-bottom: 8px; }
+  /* FIX 3 — smaller icon */
+  .flow-node-icon { font-size: 20px; margin-bottom: 8px; }  /* was 24px */
   .flow-node-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; color: #fff; margin-bottom: 4px; letter-spacing: -0.3px; }
   .flow-node-sub { font-size: 9px; color: var(--muted); line-height: 1.4; }
 
@@ -353,8 +359,7 @@
   .agent-chip {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
+    border-radius: 8px; padding: 10px 14px;
     display: flex; align-items: center; gap: 8px;
     transition: all 0.2s;
   }
@@ -365,7 +370,9 @@
   .agent-chip-name { font-size: 12px; color: var(--text); font-weight: 500; }
   .agent-chip-desc { font-size: 10px; color: var(--muted); }
 
-  /* ─── SLIDE 4: TECH STACK ─── */
+  /* ══════════════════════════════
+     SLIDE 4 — TECH STACK
+  ══════════════════════════════ */
   #slide4 .slide-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -373,23 +380,23 @@
     column-gap: 48px;
   }
 
-  #slide4 .slide-tag { grid-column: 1 / -1; }
+  #slide4 .slide-tag   { grid-column: 1 / -1; }
   #slide4 .slide-title { font-size: clamp(28px,3.2vw,44px); grid-column: 1; align-self: start; }
 
+  /* FIX 5 — align-self: start so cards don't stretch */
   .tech-grid {
     grid-column: 1;
     grid-row: 3;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    align-self: start;
+    align-self: start;     /* FIX 5 — was missing / stretch */
   }
 
   .tech-card-hero {
     background: linear-gradient(135deg, rgba(0,212,255,0.06), rgba(123,97,255,0.06));
     border: 1px solid rgba(0,212,255,0.3);
-    border-radius: 12px;
-    padding: 18px 20px;
+    border-radius: 12px; padding: 18px 20px;
     display: flex; align-items: center; gap: 16px;
   }
 
@@ -408,10 +415,8 @@
   .tech-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    flex: 1;
-    transition: border-color 0.2s;
+    border-radius: 10px; padding: 14px 16px;
+    flex: 1; transition: border-color 0.2s;
   }
 
   .tech-card:hover { border-color: var(--accent); }
@@ -426,26 +431,24 @@
     display: inline-block; padding: 2px 7px; border-radius: 4px;
   }
 
-  /* Right side of slide 4: live architecture visual */
+  /* FIX 4 — right arch panel: no top gap */
   .tech-right-panel {
     grid-column: 2;
     grid-row: 2 / 4;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 0;
+    padding-top: 0;        /* FIX 4 — was justify-content:center */
   }
 
+  /* FIX 4 — arch-visual: tighter padding + gap, no fixed height */
   .arch-visual {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 28px;
-    height: 100%;
+    padding: 18px 22px;    /* FIX 4 — was 28px */
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 12px;
+    gap: 8px;              /* FIX 4 — was 12px */
   }
 
   .arch-title {
@@ -453,46 +456,30 @@
     color: var(--muted); margin-bottom: 4px;
   }
 
-  .arch-layer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .arch-layer { display: flex; align-items: center; gap: 10px; }
 
   .arch-layer-label {
     font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
-    color: var(--muted); width: 72px; flex-shrink: 0;
-    text-align: right;
+    color: var(--muted); width: 72px; flex-shrink: 0; text-align: right;
   }
 
-  .arch-layer-items {
-    display: flex; gap: 8px; flex: 1; flex-wrap: wrap;
-  }
+  .arch-layer-items { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; }
 
   .arch-chip {
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 6px 12px; border-radius: 6px;
     font-size: 11px; font-weight: 500;
     display: flex; align-items: center; gap: 6px;
     white-space: nowrap;
   }
 
-  .arch-chip.cyan { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.25); color: var(--accent); }
+  .arch-chip.cyan   { background: rgba(0,212,255,0.1);  border: 1px solid rgba(0,212,255,0.25);  color: var(--accent); }
   .arch-chip.purple { background: rgba(123,97,255,0.1); border: 1px solid rgba(123,97,255,0.25); color: var(--accent2); }
-  .arch-chip.green { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.25); color: var(--green); }
-  .arch-chip.amber { background: rgba(255,179,64,0.1); border: 1px solid rgba(255,179,64,0.25); color: var(--amber); }
-  .arch-chip.red { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.25); color: var(--accent3); }
+  .arch-chip.green  { background: rgba(0,229,160,0.1);  border: 1px solid rgba(0,229,160,0.25);  color: var(--green); }
+  .arch-chip.amber  { background: rgba(255,179,64,0.1); border: 1px solid rgba(255,179,64,0.25); color: var(--amber); }
+  .arch-chip.red    { background: rgba(255,107,107,0.1);border: 1px solid rgba(255,107,107,0.25);color: var(--accent3); }
 
-  .arch-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 2px 0;
-  }
-
-  .arch-connector {
-    display: flex; align-items: center; justify-content: center;
-    height: 20px;
-  }
+  /* FIX 4 — shorter connectors */
+  .arch-connector { display: flex; align-items: center; justify-content: center; height: 12px; } /* was 20px */
 
   .arch-connector-line {
     width: 1px; height: 100%;
@@ -500,7 +487,9 @@
     margin: 0 auto;
   }
 
-  /* ─── SLIDE 5: IMPACT ─── */
+  /* ══════════════════════════════
+     SLIDE 5 — IMPACT
+  ══════════════════════════════ */
   #slide5 .slide-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -508,7 +497,7 @@
     column-gap: 48px;
   }
 
-  #slide5 .slide-tag { grid-column: 1 / -1; }
+  #slide5 .slide-tag   { grid-column: 1 / -1; }
   #slide5 .slide-title { font-size: clamp(28px,3.5vw,48px); grid-column: 1; }
 
   #slide5 .slide-title span {
@@ -517,99 +506,75 @@
   }
 
   .impact-left {
-    grid-column: 1;
-    grid-row: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    grid-column: 1; grid-row: 3;
+    display: flex; flex-direction: column; gap: 24px;
   }
 
   .impact-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
   }
 
   .impact-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; text-align: center;
   }
 
   .impact-num {
     font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: 28px; letter-spacing: -1px;
-    margin-bottom: 5px;
+    font-size: 28px; letter-spacing: -1px; margin-bottom: 5px;
     background: linear-gradient(135deg, var(--accent), var(--green));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
 
   .impact-label { font-size: 11px; color: var(--muted); line-height: 1.4; }
 
-  .scale-section {}
   .scale-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 
   .scale-items { display: flex; flex-direction: column; gap: 8px; }
 
   .scale-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
     display: flex; align-items: center; gap: 10px;
-    font-size: 11px; color: var(--text);
-    transition: border-color 0.2s;
+    font-size: 11px; color: var(--text); transition: border-color 0.2s;
   }
 
   .scale-item:hover { border-color: var(--green); }
   .scale-item-icon { font-size: 14px; flex-shrink: 0; }
 
   .impact-right {
-    grid-column: 2;
-    grid-row: 2 / 4;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    grid-column: 2; grid-row: 2 / 4;
+    display: flex; flex-direction: column; justify-content: center;
   }
 
   .closing-card {
     background: linear-gradient(135deg, rgba(0,229,160,0.06), rgba(0,212,255,0.06));
     border: 1px solid rgba(0,229,160,0.2);
-    border-radius: 16px;
-    padding: 36px;
-    margin-bottom: 20px;
+    border-radius: 16px; padding: 36px; margin-bottom: 20px;
   }
 
   .closing-line {
-    font-family: 'Instrument Serif', serif;
-    font-style: italic;
-    font-size: clamp(18px,2vw,26px);
-    color: var(--muted);
-    line-height: 1.6;
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: clamp(18px,2vw,26px); color: var(--muted); line-height: 1.6;
   }
 
   .closing-line span { color: var(--accent); font-style: normal; }
 
   .prize-tracks {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
   }
 
   .prize-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
 
   .prize-row {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
+    padding: 8px 0; border-bottom: 1px solid var(--border);
   }
 
   .prize-row:last-child { border-bottom: none; padding-bottom: 0; }
 
-  .prize-name { font-size: 12px; color: var(--text); }
+  .prize-name   { font-size: 12px; color: var(--text); }
   .prize-amount { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--green); }
 </style>
 </head>
@@ -651,31 +616,19 @@
         <div class="solution-features">
           <div class="sol-feat">
             <div class="sol-feat-icon" style="background:rgba(0,212,255,0.1)">📚</div>
-            <div>
-              <div class="sol-feat-name">Law Discovery</div>
-              <div class="sol-feat-desc">Exact statutes matched to your scenario in real time</div>
-            </div>
+            <div><div class="sol-feat-name">Law Discovery</div><div class="sol-feat-desc">Exact statutes matched to your scenario in real time</div></div>
           </div>
           <div class="sol-feat">
             <div class="sol-feat-icon" style="background:rgba(123,97,255,0.1)">🏛</div>
-            <div>
-              <div class="sol-feat-name">Case Precedents</div>
-              <div class="sol-feat-desc">Similar cases with outcomes to strengthen your position</div>
-            </div>
+            <div><div class="sol-feat-name">Case Precedents</div><div class="sol-feat-desc">Similar cases with outcomes to strengthen your position</div></div>
           </div>
           <div class="sol-feat">
             <div class="sol-feat-icon" style="background:rgba(0,229,160,0.1)">✉</div>
-            <div>
-              <div class="sol-feat-name">Auto-drafted Complaint</div>
-              <div class="sol-feat-desc">Ready-to-file legal letter tailored to jurisdiction</div>
-            </div>
+            <div><div class="sol-feat-name">Auto-drafted Complaint</div><div class="sol-feat-desc">Ready-to-file legal letter tailored to jurisdiction</div></div>
           </div>
           <div class="sol-feat">
             <div class="sol-feat-icon" style="background:rgba(255,107,107,0.1)">🤝</div>
-            <div>
-              <div class="sol-feat-name">Legal Aid Finder</div>
-              <div class="sol-feat-desc">Free legal resources and support near you</div>
-            </div>
+            <div><div class="sol-feat-name">Legal Aid Finder</div><div class="sol-feat-desc">Free legal resources and support near you</div></div>
           </div>
         </div>
       </div>
@@ -766,6 +719,12 @@
             <div><div class="agent-chip-name">Legal Aid Directories</div><div class="agent-chip-desc">DLSA & NGO networks</div></div>
           </div>
         </div>
+        <!-- FIX 3 — stats row -->
+        <div class="flow-stats-row" style="display:flex;gap:10px;margin-top:14px">
+          <div class="agent-chip" style="border-color:rgba(0,229,160,0.3)"><div class="agent-chip-icon" style="background:rgba(0,229,160,0.1)">⚡</div><div><div class="agent-chip-name">~20s response</div><div class="agent-chip-desc">end-to-end pipeline</div></div></div>
+          <div class="agent-chip" style="border-color:rgba(0,229,160,0.3)"><div class="agent-chip-icon" style="background:rgba(0,229,160,0.1)">🔒</div><div><div class="agent-chip-name">No data stored</div><div class="agent-chip-desc">stateless by design</div></div></div>
+          <div class="agent-chip" style="border-color:rgba(0,229,160,0.3)"><div class="agent-chip-icon" style="background:rgba(0,229,160,0.1)">🌐</div><div><div class="agent-chip-name">Live web only</div><div class="agent-chip-desc">no stale databases</div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -775,6 +734,7 @@
     <div class="slide-inner">
       <div class="slide-tag">Technology</div>
       <h1 class="slide-title">Built on a<br>real-time data<br>foundation.</h1>
+      <!-- FIX 5 — .tech-grid has align-self:start -->
       <div class="tech-grid">
         <div class="tech-card-hero">
           <div class="tech-logo-big">🌐</div>
@@ -827,11 +787,10 @@
           </div>
         </div>
       </div>
-      <!-- Right panel: architecture diagram -->
+      <!-- FIX 4 — right panel: no justify-content:center, padding-top:0 -->
       <div class="tech-right-panel">
         <div class="arch-visual">
           <div class="arch-title">Live Request Flow</div>
-
           <div class="arch-layer">
             <div class="arch-layer-label">User</div>
             <div class="arch-layer-items">
@@ -840,7 +799,6 @@
             </div>
           </div>
           <div class="arch-connector"><div class="arch-connector-line"></div></div>
-
           <div class="arch-layer">
             <div class="arch-layer-label">Frontend</div>
             <div class="arch-layer-items">
@@ -849,7 +807,6 @@
             </div>
           </div>
           <div class="arch-connector"><div class="arch-connector-line"></div></div>
-
           <div class="arch-layer">
             <div class="arch-layer-label">Agents</div>
             <div class="arch-layer-items">
@@ -867,7 +824,6 @@
             </div>
           </div>
           <div class="arch-connector"><div class="arch-connector-line"></div></div>
-
           <div class="arch-layer">
             <div class="arch-layer-label">Data</div>
             <div class="arch-layer-items">
@@ -876,7 +832,6 @@
             </div>
           </div>
           <div class="arch-connector"><div class="arch-connector-line"></div></div>
-
           <div class="arch-layer">
             <div class="arch-layer-label">Models</div>
             <div class="arch-layer-items">
@@ -885,12 +840,15 @@
             </div>
           </div>
           <div class="arch-connector"><div class="arch-connector-line"></div></div>
-
           <div class="arch-layer">
             <div class="arch-layer-label">Output</div>
             <div class="arch-layer-items">
               <div class="arch-chip green">📋 Legal Action Plan</div>
             </div>
+          </div>
+          <!-- FIX 4 — footer note -->
+          <div style="font-size:10px;color:var(--muted);margin-top:10px;text-align:center;border-top:1px solid var(--border);padding-top:10px">
+            Avg ~20s · Railway deployed · MIT License
           </div>
         </div>
       </div>
@@ -900,33 +858,21 @@
   <!-- ═══════════════ SLIDE 5: IMPACT ═══════════════ -->
   <div class="slide" id="slide5">
     <div class="slide-inner">
-      <div class="slide-tag">Impact & Scale</div>
+      <div class="slide-tag">Impact &amp; Scale</div>
       <h1 class="slide-title">Democratizing<br><span>legal access</span><br>for billions.</h1>
       <div class="impact-left">
         <div class="impact-grid">
-          <div class="impact-card">
-            <div class="impact-num">1.4B</div>
-            <div class="impact-label">potential users in India alone</div>
-          </div>
-          <div class="impact-card">
-            <div class="impact-num">&lt;30s</div>
-            <div class="impact-label">from query to complete action plan</div>
-          </div>
-          <div class="impact-card">
-            <div class="impact-num">$0</div>
-            <div class="impact-label">cost to access your legal rights</div>
-          </div>
-          <div class="impact-card">
-            <div class="impact-num">3+</div>
-            <div class="impact-label">jurisdictions, day one</div>
-          </div>
+          <div class="impact-card"><div class="impact-num">1.4B</div><div class="impact-label">potential users in India alone</div></div>
+          <div class="impact-card"><div class="impact-num">&lt;30s</div><div class="impact-label">from query to complete action plan</div></div>
+          <div class="impact-card"><div class="impact-num">$0</div><div class="impact-label">cost to access your legal rights</div></div>
+          <div class="impact-card"><div class="impact-num">3+</div><div class="impact-label">jurisdictions, day one</div></div>
         </div>
         <div class="scale-section">
           <div class="scale-title">Scale Potential</div>
           <div class="scale-items">
             <div class="scale-item"><span class="scale-item-icon">🌍</span>Expand to 50+ countries via Bright Data's global web coverage</div>
-            <div class="scale-item"><span class="scale-item-icon">📱</span>WhatsApp & SMS-first interface for rural access</div>
-            <div class="scale-item"><span class="scale-item-icon">🏛</span>NGO & legal aid organization API partnerships</div>
+            <div class="scale-item"><span class="scale-item-icon">📱</span>WhatsApp &amp; SMS-first interface for rural access</div>
+            <div class="scale-item"><span class="scale-item-icon">🏛</span>NGO &amp; legal aid organization API partnerships</div>
             <div class="scale-item"><span class="scale-item-icon">🔔</span>Proactive law change alerts for at-risk populations</div>
             <div class="scale-item"><span class="scale-item-icon">💼</span>B2B: HR compliance, tenant rights, consumer protection</div>
           </div>
@@ -938,26 +884,11 @@
         </div>
         <div class="prize-tracks">
           <div class="prize-title">Hackathon Prize Tracks</div>
-          <div class="prize-row">
-            <div class="prize-name">🏆 Security & Compliance Track</div>
-            <div class="prize-amount">$700</div>
-          </div>
-          <div class="prize-row">
-            <div class="prize-name">🏆 GTM Intelligence Track</div>
-            <div class="prize-amount">$700</div>
-          </div>
-          <div class="prize-row">
-            <div class="prize-name">🤖 AI/ML API Partner Prize</div>
-            <div class="prize-amount">$1,000 cash</div>
-          </div>
-          <div class="prize-row">
-            <div class="prize-name">🎙 Speechmatics Partner Prize</div>
-            <div class="prize-amount">eligible</div>
-          </div>
-          <div class="prize-row">
-            <div class="prize-name">🌐 Bright Data Startup Program</div>
-            <div class="prize-amount">$20,000 credits</div>
-          </div>
+          <div class="prize-row"><div class="prize-name">🏆 Security &amp; Compliance Track</div><div class="prize-amount">$700</div></div>
+          <div class="prize-row"><div class="prize-name">🏆 GTM Intelligence Track</div><div class="prize-amount">$700</div></div>
+          <div class="prize-row"><div class="prize-name">🤖 AI/ML API Partner Prize</div><div class="prize-amount">$1,000 cash</div></div>
+          <div class="prize-row"><div class="prize-name">🎙 Speechmatics Partner Prize</div><div class="prize-amount">eligible</div></div>
+          <div class="prize-row"><div class="prize-name">🌐 Bright Data Startup Program</div><div class="prize-amount">$20,000 credits</div></div>
         </div>
       </div>
     </div>
@@ -991,7 +922,7 @@
   function goTo(idx) {
     if (idx === current) return;
     const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.nav-dot');
+    const dots   = document.querySelectorAll('.nav-dot');
     slides[current].classList.remove('active');
     slides[current].classList.add('exit');
     setTimeout(() => {
@@ -1000,7 +931,7 @@
       slides[current].classList.add('active');
       dots.forEach((d,i) => d.classList.toggle('active', i === current));
       document.getElementById('counter').textContent =
-        String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+        String(current + 1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
     }, 80);
   }
 
@@ -1009,12 +940,12 @@
 
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prev();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prev();
   });
 
   let touchX = 0;
   document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
-  document.addEventListener('touchend', e => {
+  document.addEventListener('touchend',   e => {
     const dx = e.changedTouches[0].clientX - touchX;
     if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
   });
