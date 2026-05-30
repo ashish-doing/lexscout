@@ -432,11 +432,9 @@ curl -X POST http://localhost:8000/query `
 
 ## Demo Video
 
-## Demo Video
-
 [![Watch the LexScout Demo](https://img.youtube.com/vi/XoY7zrMXU70/maxresdefault.jpg)](https://youtu.be/XoY7zrMXU70)
 
-▶ **[Watch the 3-minute demo on YouTube](https://youtu.be/XoY7zrMXU70)**
+▶ **[Watch the 4-minute demo on YouTube](https://youtu.be/XoY7zrMXU70)**
 
 ---
 
