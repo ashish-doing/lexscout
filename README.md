@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=28&duration=3000&pause=1000&color=00D4FF&center=true&vCenter=true&width=800&lines=LexScout+%E2%80%94+Legal+Action+Intelligence+Agent;Bright+Data+Web+Data+UNLOCKED+Hackathon+2026" alt="LexScout" />
+<img src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=22&duration=3000&pause=1000&color=00D4FF&center=true&vCenter=true&width=1000&lines=LexScout+%E2%80%94+Legal+Action+Intelligence+Agent;Bright+Data+Web+Data+UNLOCKED+Hackathon+2026" alt="LexScout" />
 
 <br/>
 
@@ -11,12 +11,19 @@
   <img src="https://img.shields.io/badge/Bright%20Data-Web%20Unlocker-FF6B00?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Bright%20Data-Scraping%20Browser-FF6B00?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Speechmatics-Real--time%20STT-6B4FFF?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Gemini-1.5%20Flash-4285F4?style=for-the-badge&logo=google" />
+  <img src="https://img.shields.io/badge/Groq-llama--3.3--70b-F55036?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/AI%2FML%20API-Mistral--7B-7B2FBE?style=for-the-badge" />
   <img src="https://img.shields.io/badge/LangGraph-0.2+-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/FastAPI-0.111+-009688?style=for-the-badge&logo=fastapi" />
   <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" />
 </p>
+
+<br/>
+
+<p><strong>Bright Data Web Data UNLOCKED Hackathon 2026 — Submission · Deadline: May 30, 2026</strong></p>
+
+<p>A 5-agent AI pipeline that converts a plain-language legal situation into a complete, jurisdiction-specific action plan — statutes, case precedents, a drafted complaint letter, the exact filing portal, and legal aid contacts — in under 30 seconds. Powered entirely by Bright Data's live web infrastructure.</p>
 
 <p>
   <a href="https://lexscout-production.up.railway.app"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-Railway-0B0D0E?style=for-the-badge&logo=railway" /></a>
@@ -26,13 +33,16 @@
 
 <br/>
 
-> **Bright Data Web Data UNLOCKED Hackathon 2026 — Submission · Deadline: May 30, 2026**
->
-> A 5-agent AI pipeline that converts a plain-language legal situation into a complete, jurisdiction-specific action plan — statutes, case precedents, a drafted complaint letter, the exact filing portal, and legal aid contacts — in under 30 seconds. Powered entirely by Bright Data's live web infrastructure.
-
-<br/>
-
 </div>
+
+---
+
+## Hackathon Tracks
+- ✅ Track 3: Security & Compliance (primary)
+- ✅ Track 1: GTM Intelligence (secondary)
+- ✅ Partner: AI/ML API Challenge
+- ✅ Partner: Speechmatics Challenge
+- ✅ Bright Data Requirement: SERP API + Browser API integrated
 
 ---
 
@@ -65,9 +75,31 @@ Describe your situation in plain language. LexScout returns:
 
 ## Screenshots
 
-> Screenshots will be added after the demo video is recorded.
->
-> _Showing: query input → 5-agent loading sequence → laws with timeline → case precedent cards → complaint letter → portal link → legal aid contacts_
+### 🖥️ Live Product
+
+**Homepage — Describe your situation**
+![LexScout Hero](frontend/screenshots/ss-hero.png)
+> Query input with hint chips, jurisdiction selector, mic button, and stats bar
+
+**Results — Laws & Case Precedents**
+![LexScout Results](frontend/screenshots/ss-results.png)
+> Applicable laws with timeline, relevant case precedents with outcomes
+
+**Action Plan — Complaint Letter, Filing Portal & Legal Aid**
+![LexScout Complaint](frontend/screenshots/ss-complaint.png)
+> Auto-drafted complaint letter citing exact laws, official government filing portal, legal aid contacts
+
+---
+
+### 📊 Architecture & Impact
+
+**Tech Stack — Groq + AI/ML API + Bright Data + LangGraph**
+![LexScout Tech Stack](frontend/screenshots/pitch-tech.png)
+> Full technology stack with live request flow: Voice/Text → Speechmatics → 5 Agents → Bright Data SERP/Browser → Groq llama-3.3-70b + Mistral-7B → Legal Action Plan
+
+**Impact & Prize Tracks**
+![LexScout Impact](frontend/screenshots/pitch-impact.png)
+> 1.4B potential users · <30s response · $0 cost · 3+ jurisdictions · $2,400+ prize track eligibility
 
 ---
 
@@ -85,7 +117,7 @@ All four Bright Data products are used, each mapped to a dedicated agent in the 
 | **Targets** | `indiacode.nic.in` · `law.cornell.edu` · `eur-lex.europa.eu` |
 | **What it does** | Searches government legal databases for statutes matching the user's legal category and jurisdiction |
 | **Why Bright Data** | Legal government portals block generic scrapers with rate limits and geo-restrictions. SERP API surfaces authoritative results reliably |
-| **Output** | Raw results → Gemini extracts `{law_name, article, created, last_amended, covers}` |
+| **Output** | Raw results → Groq extracts `{law_name, article, created, last_amended, covers}` |
 
 ### 🔓 `bright_data_access()` — Web Unlocker → Case Scraping
 
@@ -95,7 +127,7 @@ All four Bright Data products are used, each mapped to a dedicated agent in the 
 | **Targets** | `indiankanoon.org` · `courtlistener.com` · `curia.europa.eu` |
 | **What it does** | Fetches full rendered page content from case law databases behind Cloudflare, CAPTCHAs, and browser fingerprinting |
 | **Why Bright Data** | Indian Kanoon and CourtListener implement heavy bot-detection. Web Unlocker handles JS rendering, fingerprint rotation, and residential IP routing |
-| **Output** | Raw HTML → Gemini parses `{case_name, outcome, year, relevance, citation}` |
+| **Output** | Raw HTML → Groq parses `{case_name, outcome, year, relevance, citation}` |
 
 ### 🖥️ `bright_data_extract()` — Scraping Browser → Portal Extraction
 
@@ -133,17 +165,24 @@ LexScout supports voice-to-text query input via the **Speechmatics Real-time API
 
 This makes LexScout accessible to users who cannot type — particularly important for the rural and low-literacy demographics who face the most legal vulnerability.
 
-### 🧠 Google Gemini 1.5 Flash — AI Synthesis Engine
+### 🧠 Groq — llama-3.3-70b-versatile
 
-Gemini powers all reasoning inside the 5-agent pipeline:
+Groq powers all reasoning in Agents 1–4 of the pipeline:
 
-| Agent | Gemini Task |
+| Agent | Task |
 |---|---|
 | Classifier | Identify legal category + jurisdiction from plain-language input |
 | Law Finder | Parse Bright Data SERP results → structured law objects |
-| Precedent Hunter | Parse Bright Data HTML → structured case objects |
-| Action Builder | Draft jurisdiction-specific complaint letter |
-| Synthesizer | Write executive summary, urgency score, next steps |
+| Precedent Hunter | Parse SERP snippets → structured case objects |
+| Action Builder | Draft jurisdiction-specific complaint letter with exact citations |
+
+### 🤖 AI/ML API — Mistral-7B-Instruct-v0.2
+
+The executive summary (Agent 5 — Synthesizer) is generated via the **AI/ML API** using `mistralai/Mistral-7B-Instruct-v0.2`:
+
+- Endpoint: `https://api.aimlapi.com/v1/chat/completions`
+- Produces: 3-sentence executive summary, urgency score, 5-step action plan
+- Fallback: Groq llama-3.3-70b if AI/ML API is unavailable
 
 ---
 
@@ -160,7 +199,7 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 │                                                              │
 │  ┌─────────────────┐                                         │
 │  │   Agent 1       │                                         │
-│  │   Classifier    │  Gemini 1.5F                            │
+│  │   Classifier    │  Groq llama-3.3-70b                     │
 │  │                 │  → category, jurisdictions              │
 │  └────────┬────────┘                                         │
 │           ▼                                                  │
@@ -168,7 +207,7 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 │  │   Agent 2       │  bright_data_search()                   │
 │  │   Law Finder    │  ← Bright Data SERP API                 │
 │  │                 │  Targets: indiacode.nic.in              │
-│  │  + Gemini       │           law.cornell.edu               │
+│  │  + Groq         │           law.cornell.edu               │
 │  │  → laws[]       │           eur-lex.europa.eu             │
 │  └────────┬────────┘                                         │
 │           ▼                                                  │
@@ -176,8 +215,8 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 │  │   Agent 3       │  bright_data_access()                   │
 │  │ Precedent Hunter│  ← Bright Data Web Unlocker             │
 │  │                 │  Targets: indiankanoon.org              │
-│  │  + Gemini       │           courtlistener.com             │
-│  │  → precedents[] │           curia.europa.eu               │
+│  │  + Groq         │           courtlistener.com             │
+│  │  → precedents[] │           curia.europa.eu              │
 │  └────────┬────────┘                                         │
 │           ▼                                                  │
 │  ┌──────────────────────────────────────────────────┐        │
@@ -187,14 +226,14 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 │  │  bright_data_extract()  ← Scraping Browser       │        │
 │  │  → portal_url (live complaint filing link)       │        │
 │  │                                                  │        │
-│  │  bright_data_interact() ← Browser Automation     │        │
+│  │  bright_data_interact() ← Browser Automation    │        │
 │  │  → legal_aid_contacts[] (structured orgs)        │        │
 │  │                                                  │        │
-│  │  Gemini 1.5F → complaint_draft                   │        │
+│  │  Groq llama-3.3-70b → complaint_draft            │        │
 │  └────────┬─────────────────────────────────────────┘        │
 │           ▼                                                  │
 │  ┌─────────────────┐                                         │
-│  │   Agent 5       │  Gemini 1.5F                            │
+│  │   Agent 5       │  AI/ML API Mistral-7B                   │
 │  │   Synthesizer   │  → executive_summary                    │
 │  │                 │  → next_steps[]                         │
 │  │                 │  → urgency                              │
@@ -222,7 +261,8 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 | **Data** | Bright Data Scraping Browser | Portal URL extraction |
 | **Data** | Bright Data Browser Automation | Legal aid directory navigation |
 | **Voice** | Speechmatics Real-time API | WebSocket speech-to-text |
-| **LLM** | Google Gemini 1.5 Flash | Classification, parsing, drafting, synthesis |
+| **LLM** | Groq llama-3.3-70b | Agents 1–4: classification, parsing, drafting |
+| **LLM** | AI/ML API — Mistral-7B | Agent 5: executive summary synthesis |
 | **Orchestration** | LangGraph StateGraph | 5-agent pipeline with shared state |
 | **Backend** | FastAPI + Uvicorn | REST API, CORS, request validation |
 | **Validation** | Pydantic v2 | Request/response schema |
@@ -275,8 +315,10 @@ lexscout/
 
 ### Prerequisites
 - Python 3.11+
-- [Google AI Studio](https://aistudio.google.com/app/apikey) API key (free tier works)
-- [Bright Data](https://brightdata.com) account with SERP, Web Unlocker, and Scraping Browser zones
+- [Groq](https://console.groq.com) API key (free tier works)
+- [AI/ML API](https://aimlapi.com) API key
+- [Speechmatics](https://speechmatics.com) API key
+- [Bright Data](https://brightdata.com) account with SERP and Browser zones
 
 ### 1. Clone
 
@@ -300,12 +342,13 @@ notepad .env
 ```
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+AIML_API_KEY=your_aiml_api_key_here
+SPEECHMATICS_API_KEY=your_speechmatics_api_key_here
 
 BRIGHT_DATA_API_KEY=your_bright_data_api_key_here
 BRIGHT_DATA_SERP_ZONE=serp_api1
-BRIGHT_DATA_UNLOCKER_ZONE=web_unlocker1
-BRIGHT_DATA_SB_ZONE=scraping_browser1
+BRIGHT_DATA_BROWSER_ZONE=browser_zone1
 
 ENV=development
 PORT=8000
@@ -348,20 +391,20 @@ curl -X POST http://localhost:8000/query `
 **Response (200):**
 ```json
 {
-  "laws": [{"law_name": "Payment of Wages Act, 1936", "article": "Section 7", ...}],
-  "precedents": [{"case_name": "Workmen v. Reptakos Brett & Co. (1992)", ...}],
+  "laws": [{"law_name": "Payment of Wages Act, 1936", "article": "Section 7", "...": "..."}],
+  "precedents": [{"case_name": "Workmen v. Reptakos Brett & Co. (1992)", "...": "..."}],
   "action_plan": {
     "complaint_draft": "To The Regional Labour Commissioner...",
     "portal_url": "https://clc.gov.in/",
-    "legal_aid_contacts": [{"organization": "NALSA", "phone": "15100", ...}],
-    "next_steps": ["Step 1: Document all deductions...", ...]
+    "legal_aid_contacts": [{"organization": "NALSA", "phone": "15100", "...": "..."}],
+    "next_steps": ["Step 1: Document all deductions...", "..."]
   },
   "meta": {
     "bright_data_tools_used": [
-      "bright_data_search  → SERP API",
-      "bright_data_access  → Web Unlocker",
-      "bright_data_extract → Scraping Browser",
-      "bright_data_interact→ Browser Automation"
+      "bright_data_search   → SERP API",
+      "bright_data_access   → Web Unlocker",
+      "bright_data_extract  → Scraping Browser",
+      "bright_data_interact → Browser Automation"
     ],
     "elapsed_seconds": 18.4
   }
@@ -386,7 +429,7 @@ curl -X POST http://localhost:8000/query `
 1. Push to GitHub
 2. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub** → `ashish-doing/lexscout`
 3. Railway reads `backend/railway.toml` automatically
-4. Add env vars: `GEMINI_API_KEY` + `BRIGHT_DATA_API_KEY` + zone names
+4. Add env vars: `GROQ_API_KEY` + `AIML_API_KEY` + `SPEECHMATICS_API_KEY` + `BRIGHT_DATA_API_KEY` + zone names
 5. Live URL: **[https://lexscout-production.up.railway.app](https://lexscout-production.up.railway.app)**
 
 ### Render.com (alternative)
@@ -397,26 +440,7 @@ curl -X POST http://localhost:8000/query `
 
 ## Demo Video
 
-▶ **[Watch the 3-minute demo on YouTube](https://youtube.com/YOUR_DEMO_LINK_HERE)**
-
-```
-0:00–0:20  LexScout homepage — explain the problem
-0:20–0:35  Click 🎤 mic → speak the scenario (Speechmatics live transcription)
-0:35–0:50  Select India, click Analyze
-0:50–1:30  Loading sequence — terminal shows all 4 Bright Data product logs:
-             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-             [14:32:01] 🔍 BRIGHT DATA — SERP API
-               ▶ Google search | jurisdiction=india
-               ⤷ query="Photography privacy law India..."
-             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-             [Bright Data Web Unlocker] Accessing: indiankanoon.org
-             [Bright Data Scraping Browser] Extracting: cybercrime.gov.in
-             [Bright Data Browser Automation] Navigating: nalsa.gov.in
-1:30–2:00  Laws with history timeline — IT Act Section 66E
-2:00–2:20  Case precedent cards + citations
-2:20–2:40  Complaint letter + Copy button
-2:40–3:00  Portal URL + legal aid contacts — close with impact stat
-```
+▶ **[Watch the 3-minute demo on YouTube](YOUR_YOUTUBE_LINK)**
 
 ---
 
@@ -453,7 +477,7 @@ MIT — see [LICENSE](LICENSE) for details.
 
 Built for the **Bright Data Web Data UNLOCKED Hackathon — May 2026**
 
-*Powered by Bright Data · Speechmatics · Google Gemini · LangGraph*
+*Powered by Bright Data · Speechmatics · Groq · AI/ML API · LangGraph*
 
 ⚖️ *Know your rights. Take action.*
 
