@@ -302,7 +302,8 @@ lexscout/
 │   └── render.yaml          # Render.com IaC config
 ├── frontend/
 │   ├── index.html           # Main UI — voice input, 5 result sections
-│   └── pitch.html           # 5-slide pitch deck
+│   ├── pitch.html           # 5-slide pitch deck
+│   └── screenshots/         # UI screenshots for README
 ├── .env.example             # Environment variable template
 ├── .gitignore
 ├── LICENSE
