@@ -1,5 +1,15 @@
 # ⚖️ LexScout — Legal Action Intelligence Agent
 
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green?style=flat-square&logo=fastapi)
+![LangGraph](https://img.shields.io/badge/LangGraph-0.2-purple?style=flat-square)
+![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-orange?style=flat-square)
+![Railway](https://img.shields.io/badge/Deployed-Railway-blueviolet?style=flat-square&logo=railway)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+![Hackathon](https://img.shields.io/badge/Bright%20Data-Hackathon%202026-cyan?style=flat-square)
+
+🎬 **[Watch Demo Video](https://youtu.be/XoY7zrMXU70)** | 🌐 **[Live Demo](https://ashish-doing.github.io/lexscout/)** | 📦 **[API Docs](https://lexscout-production.up.railway.app/docs)**
+
 <div align="center">
 
 <img src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=22&duration=3000&pause=1000&color=00D4FF&center=true&vCenter=true&width=1000&lines=LexScout+%E2%80%94+Legal+Action+Intelligence+Agent;Bright+Data+Web+Data+UNLOCKED+Hackathon+2026" alt="LexScout" />
@@ -23,12 +33,12 @@
 
 <p><strong>Bright Data Web Data UNLOCKED Hackathon 2026 — Submission · Deadline: May 30, 2026</strong></p>
 
-<p>A 5-agent AI pipeline that converts a plain-language legal situation into a complete, jurisdiction-specific action plan — statutes, case precedents, a drafted complaint letter, the exact filing portal, and legal aid contacts — in under 30 seconds. Powered entirely by Bright Data's live web infrastructure.</p>
+<p>A 5-agent AI pipeline that converts a plain-language legal situation into a complete, jurisdiction-specific action plan — statutes, case precedents, a drafted complaint letter, the exact filing portal, and legal aid contacts — in under 30 seconds. 4 Bright Data API calls per query. Powered entirely by Bright Data's live web infrastructure.</p>
 
 <p>
   <a href="https://lexscout-production.up.railway.app"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-Railway-0B0D0E?style=for-the-badge&logo=railway" /></a>
   <a href="https://github.com/ashish-doing/lexscout"><img src="https://img.shields.io/badge/%F0%9F%93%81%20GitHub-ashish--doing%2Flexscout-181717?style=for-the-badge&logo=github" /></a>
-  <a href="https://youtube.com/YOUR_DEMO_LINK_HERE"><img src="https://img.shields.io/badge/%F0%9F%8E%AC%20Demo%20Video-YouTube-FF0000?style=for-the-badge&logo=youtube" /></a>
+  <a href="https://youtu.be/XoY7zrMXU70"><img src="https://img.shields.io/badge/%F0%9F%8E%AC%20Demo%20Video-YouTube-FF0000?style=for-the-badge&logo=youtube" /></a>
 </p>
 
 <br/>
@@ -46,9 +56,21 @@
 
 ---
 
+## Why LexScout Wins
+
+| Judging Criteria | How LexScout Delivers |
+|---|---|
+| **Bright Data Integration** | 4 Bright Data API calls per query — SERP API (law search) + Browser API (case scraping + portal extraction + legal aid navigation) — both live |
+| **Technical Complexity** | 5-agent LangGraph pipeline, async FastAPI, real-time web scraping, Groq + AI/ML API dual-LLM architecture |
+| **Real-World Impact** | 1.4B addressable users, $0 cost, 3 jurisdictions live on day one |
+| **Innovation** | First pipeline to combine live statute search + precedent scraping + auto-complaint generation in a single API call |
+| **Demo Quality** | 3 live scenarios across India, USA, EU with real queries and real Bright Data responses |
+
+---
+
 ## The Problem
 
-**250 million people** face legal violations every year and never act on them — not because the laws don't protect them, but because the system is too expensive, too opaque, and too fragmented to navigate alone.
+**85% of legal violations go unreported.** $300+ per lawyer consultation. 40M+ pending cases — citizens don't know where to start.
 
 A domestic worker photographed without consent doesn't know Section 66E exists. A gig worker whose wages were illegally deducted doesn't know which Labour Commissioner to file with. A consumer defrauded online doesn't know they can file on `consumerhelpline.gov.in` for free.
 
@@ -58,12 +80,12 @@ A domestic worker photographed without consent doesn't know Section 66E exists. 
 
 ## The Solution
 
-Describe your situation in plain language. LexScout returns:
+Describe your situation in plain language. LexScout returns a complete legal action plan in **~20 seconds**:
 
 | Output | Example |
 |---|---|
-| 📜 **Relevant Laws** | Payment of Wages Act 1936 §7; Industrial Disputes Act 1947 §25F |
-| ⚖️ **Case Precedents** | *Workmen v. Reptakos Brett & Co. (1992)* — employer liable for unlawful deductions |
+| 📜 **Relevant Laws** | 2–4 statutes — Payment of Wages Act 1936 §7; Industrial Disputes Act 1947 §25F |
+| ⚖️ **Case Precedents** | 3–5 cases — *Workmen v. Reptakos Brett & Co. (1992)* — employer liable for unlawful deductions |
 | 📝 **Complaint Letter** | Full formal letter with legal citations, ready to file |
 | 🌐 **Filing Portal** | `https://clc.gov.in/` — live-scraped, verified link |
 | 🤝 **Legal Aid** | NALSA + local orgs with phone, email, website |
@@ -107,7 +129,7 @@ Describe your situation in plain language. LexScout returns:
 
 Static legal databases go stale within months. Laws get amended. Complaint portals change URLs. Case databases add thousands of new judgments daily. **LexScout cannot exist without live web data** — Bright Data is the infrastructure that makes this possible.
 
-All four Bright Data products are used, each mapped to a dedicated agent in the pipeline:
+**4 Bright Data API calls per query**, each mapped to a dedicated agent in the pipeline:
 
 ### 🔍 `bright_data_search()` — SERP API → Law Discovery
 
@@ -117,7 +139,7 @@ All four Bright Data products are used, each mapped to a dedicated agent in the 
 | **Targets** | `indiacode.nic.in` · `law.cornell.edu` · `eur-lex.europa.eu` |
 | **What it does** | Searches government legal databases for statutes matching the user's legal category and jurisdiction |
 | **Why Bright Data** | Legal government portals block generic scrapers with rate limits and geo-restrictions. SERP API surfaces authoritative results reliably |
-| **Output** | Raw results → Groq extracts `{law_name, article, created, last_amended, covers}` |
+| **Output** | Raw results → Groq extracts `{law_name, article, created, last_amended, covers}` — 2–4 laws per query |
 
 ### 🔓 `bright_data_access()` — Web Unlocker → Case Scraping
 
@@ -127,7 +149,7 @@ All four Bright Data products are used, each mapped to a dedicated agent in the 
 | **Targets** | `indiankanoon.org` · `courtlistener.com` · `curia.europa.eu` |
 | **What it does** | Fetches full rendered page content from case law databases behind Cloudflare, CAPTCHAs, and browser fingerprinting |
 | **Why Bright Data** | Indian Kanoon and CourtListener implement heavy bot-detection. Web Unlocker handles JS rendering, fingerprint rotation, and residential IP routing |
-| **Output** | Raw HTML → Groq parses `{case_name, outcome, year, relevance, citation}` |
+| **Output** | Raw HTML → Groq parses `{case_name, outcome, year, relevance, citation}` — 3–5 precedents per query |
 
 ### 🖥️ `bright_data_extract()` — Scraping Browser → Portal Extraction
 
@@ -192,7 +214,7 @@ The executive summary (Agent 5 — Synthesizer) is generated via the **AI/ML API
 User (browser) ──🎤 Speechmatics RT API──► textarea
        │
        ▼  POST /query  {"query": "...", "country": "India"}
-       │
+       │                                 ~20s end-to-end
        ▼
 ┌──────────────────────────────────────────────────────────────┐
 │               LexScout StateGraph  (LangGraph)               │
@@ -314,6 +336,15 @@ lexscout/
 
 ## Quick Start
 
+```bash
+git clone https://github.com/ashish-doing/lexscout
+cd lexscout && cp .env.example backend/.env
+# Add your API keys to backend/.env
+cd backend && pip install -r requirements.txt
+uvicorn main:app --reload
+# Open frontend/index.html in browser
+```
+
 ### Prerequisites
 - Python 3.11+
 - [Groq](https://console.groq.com) API key (free tier works)
@@ -321,26 +352,7 @@ lexscout/
 - [Speechmatics](https://speechmatics.com) API key
 - [Bright Data](https://brightdata.com) account with SERP and Browser zones
 
-### 1. Clone
-
-```powershell
-git clone https://github.com/ashish-doing/lexscout.git
-cd lexscout
-```
-
-### 2. Install
-
-```powershell
-cd backend
-pip install -r requirements.txt
-```
-
-### 3. Configure
-
-```powershell
-copy ..\env.example .env
-notepad .env
-```
+### Environment Variables (`backend/.env`)
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
@@ -355,19 +367,7 @@ ENV=development
 PORT=8000
 ```
 
-### 4. Run
-
-```powershell
-uvicorn main:app --reload --port 8000
-```
-
-Backend: `http://localhost:8000` · Swagger: `http://localhost:8000/docs`
-
-### 5. Frontend
-
-Open `frontend/index.html` directly in your browser — no build step needed.
-
-### 6. Test
+### Test
 
 ```powershell
 curl -X POST http://localhost:8000/query `
@@ -441,7 +441,7 @@ curl -X POST http://localhost:8000/query `
 
 ## Demo Video
 
-▶ **[Watch the 3-minute demo on YouTube](YOUR_YOUTUBE_LINK)**
+▶ **[Watch the 3-minute demo on YouTube](https://youtu.be/XoY7zrMXU70)**
 
 ---
 
@@ -451,7 +451,7 @@ curl -X POST http://localhost:8000/query `
 |---|---|
 | Addressable users | 500M+ people who face legal issues annually without counsel |
 | Cost reduction | From ₹3,000–₹15,000/hr → ₹0 |
-| Time to action | From weeks (lawyer consultation) → 30 seconds |
+| Time to action | From weeks (lawyer consultation) → ~20 seconds |
 | Scale path | 50+ jurisdictions via Bright Data's global proxy network |
 | B2B path | API for legal aid NGOs, court assistance programs, HR platforms |
 | Accessibility | Voice input via Speechmatics for low-literacy and rural users |
