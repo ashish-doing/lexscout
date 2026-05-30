@@ -216,7 +216,7 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 │  │ Precedent Hunter│  ← Bright Data Web Unlocker             │
 │  │                 │  Targets: indiankanoon.org              │
 │  │  + Groq         │           courtlistener.com             │
-│  │  → precedents[] │           curia.europa.eu              │
+│  │  → precedents[] │           curia.europa.eu               │
 │  └────────┬────────┘                                         │
 │           ▼                                                  │
 │  ┌──────────────────────────────────────────────────┐        │
@@ -226,7 +226,7 @@ User (browser) ──🎤 Speechmatics RT API──► textarea
 │  │  bright_data_extract()  ← Scraping Browser       │        │
 │  │  → portal_url (live complaint filing link)       │        │
 │  │                                                  │        │
-│  │  bright_data_interact() ← Browser Automation    │        │
+│  │  bright_data_interact() ← Browser Automation     │        │
 │  │  → legal_aid_contacts[] (structured orgs)        │        │
 │  │                                                  │        │
 │  │  Groq llama-3.3-70b → complaint_draft            │        │
