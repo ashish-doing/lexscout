@@ -26,7 +26,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-# Load .env before importing agents (agents.py reads GEMINI_API_KEY on import)
+# Load .env before importing agents (agents.py reads GROQ_API_KEY on import)
 load_dotenv()
 
 # ─────────────────────────────── Logging ──────────────────────────────────
@@ -38,7 +38,7 @@ logging.basicConfig(
 logger = logging.getLogger("lexscout.main")
 
 # ─────────────────────────────── Agent import ─────────────────────────────
-# Deferred to after load_dotenv() so GEMINI_API_KEY is available
+# Deferred to after load_dotenv() so GROQ_API_KEY is available
 from agents import LexScoutState, lexscout_graph  # noqa: E402
 
 
@@ -65,7 +65,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="LexScout — Legal Action Intelligence API",
     description=(
-        "5-agent LangGraph pipeline powered by Gemini 1.5 Flash + Bright Data.\n\n"
+        "5-agent LangGraph pipeline powered by Groq llama-3.3-70b + AI/ML API Mistral-7B + Bright Data.\n\n"
         "Converts a plain-language legal situation into:\n"
         "- Relevant laws & articles\n"
         "- Recent case precedents\n"
@@ -134,7 +134,7 @@ class HealthResponse(BaseModel):
     status: str
     version: str
     agents: int
-    gemini_key_set: bool
+    groq_key_set: bool
 
 
 class SupportedResponse(BaseModel):
@@ -182,7 +182,7 @@ async def root() -> Dict[str, Any]:
         "status": "online",
         "version": "1.0.0",
         "agents": 5,
-        "gemini_key_set": bool(os.getenv("GEMINI_API_KEY")),
+        "groq_key_set": bool(os.getenv("GROQ_API_KEY"))
     }
 
 
@@ -197,7 +197,7 @@ async def health() -> Dict[str, Any]:
         "status": "healthy",
         "version": "1.0.0",
         "agents": 5,
-        "gemini_key_set": bool(os.getenv("GEMINI_API_KEY")),
+        "groq_key_set": bool(os.getenv("GROQ_API_KEY"))
     }
 
 
@@ -256,9 +256,7 @@ async def run_query(payload: QueryRequest, request: Request) -> JSONResponse:
     | `action_plan.next_steps` | 5 concrete action steps |
 
     ### Notes
-    - Processing time: ~10–30 s (5 Gemini calls + 4 Bright Data operations)
-    - Bright Data tools currently use placeholder implementations.
-      Wire real MCP calls into `agents.py` to activate live data.
+    - Processing time: ~20–30s (5 Groq/Mistral calls + Bright Data SERP + Browser API)
     """
     start_ts = time.perf_counter()
     client_ip = request.client.host if request.client else "unknown"
