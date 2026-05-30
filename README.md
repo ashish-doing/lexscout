@@ -26,7 +26,7 @@
 <p>A 5-agent AI pipeline that converts a plain-language legal situation into a complete, jurisdiction-specific action plan — statutes, case precedents, a drafted complaint letter, the exact filing portal, and legal aid contacts — in under 30 seconds. 4 Bright Data API calls per query. Powered entirely by Bright Data's live web infrastructure.</p>
 
 <p>
-  <a href="https://ashish-doing.github.io/lexscout/"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-Railway-0B0D0E?style=for-the-badge&logo=railway" /></a>
+  <a href="https://ashish-doing.github.io/lexscout/"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-GitHub%20Pages-222?style=for-the-badge&logo=github" /></a>
   <a href="https://youtu.be/XoY7zrMXU70"><img src="https://img.shields.io/badge/%F0%9F%8E%AC%20Demo%20Video-YouTube-FF0000?style=for-the-badge&logo=youtube" /></a>
   <a href="https://lexscout-production.up.railway.app/docs"><img src="https://img.shields.io/badge/%F0%9F%93%84%20API%20Docs-Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=000" /></a>
   <a href="https://lexscout-production.up.railway.app/health"><img src="https://img.shields.io/badge/%E2%9C%85%20API%20Health-Live-00e5a0?style=for-the-badge" /></a>
