@@ -1,15 +1,5 @@
 # ⚖️ LexScout — Legal Action Intelligence Agent
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green?style=flat-square&logo=fastapi)
-![LangGraph](https://img.shields.io/badge/LangGraph-0.2-purple?style=flat-square)
-![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-orange?style=flat-square)
-![Railway](https://img.shields.io/badge/Deployed-Railway-blueviolet?style=flat-square&logo=railway)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
-![Hackathon](https://img.shields.io/badge/Bright%20Data-Hackathon%202026-cyan?style=flat-square)
-
-🎬 **[Watch Demo Video](https://youtu.be/XoY7zrMXU70)** | 🌐 **[Live Demo](https://ashish-doing.github.io/lexscout/)** | 📦 **[API Docs](https://lexscout-production.up.railway.app/docs)**
-
 <div align="center">
 
 <img src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=22&duration=3000&pause=1000&color=00D4FF&center=true&vCenter=true&width=1000&lines=LexScout+%E2%80%94+Legal+Action+Intelligence+Agent;Bright+Data+Web+Data+UNLOCKED+Hackathon+2026" alt="LexScout" />
@@ -36,9 +26,10 @@
 <p>A 5-agent AI pipeline that converts a plain-language legal situation into a complete, jurisdiction-specific action plan — statutes, case precedents, a drafted complaint letter, the exact filing portal, and legal aid contacts — in under 30 seconds. 4 Bright Data API calls per query. Powered entirely by Bright Data's live web infrastructure.</p>
 
 <p>
-  <a href="https://lexscout-production.up.railway.app"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-Railway-0B0D0E?style=for-the-badge&logo=railway" /></a>
-  <a href="https://github.com/ashish-doing/lexscout"><img src="https://img.shields.io/badge/%F0%9F%93%81%20GitHub-ashish--doing%2Flexscout-181717?style=for-the-badge&logo=github" /></a>
+  <a href="https://ashish-doing.github.io/lexscout/"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-Railway-0B0D0E?style=for-the-badge&logo=railway" /></a>
   <a href="https://youtu.be/XoY7zrMXU70"><img src="https://img.shields.io/badge/%F0%9F%8E%AC%20Demo%20Video-YouTube-FF0000?style=for-the-badge&logo=youtube" /></a>
+  <a href="https://lexscout-production.up.railway.app/docs"><img src="https://img.shields.io/badge/%F0%9F%93%84%20API%20Docs-Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=000" /></a>
+  <a href="https://lexscout-production.up.railway.app/health"><img src="https://img.shields.io/badge/%E2%9C%85%20API%20Health-Live-00e5a0?style=for-the-badge" /></a>
 </p>
 
 <br/>
@@ -440,6 +431,10 @@ curl -X POST http://localhost:8000/query `
 ---
 
 ## Demo Video
+
+## Demo Video
+
+[![Watch the LexScout Demo](https://img.youtube.com/vi/XoY7zrMXU70/maxresdefault.jpg)](https://youtu.be/XoY7zrMXU70)
 
 ▶ **[Watch the 3-minute demo on YouTube](https://youtu.be/XoY7zrMXU70)**
 
