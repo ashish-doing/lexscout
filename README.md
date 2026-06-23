@@ -28,8 +28,8 @@
 <p>
   <a href="https://ashish-doing.github.io/lexscout/"><img src="https://img.shields.io/badge/%F0%9F%9A%80%20Live%20Demo-GitHub%20Pages-222?style=for-the-badge&logo=github" /></a>
   <a href="https://youtu.be/XoY7zrMXU70"><img src="https://img.shields.io/badge/%F0%9F%8E%AC%20Demo%20Video-YouTube-FF0000?style=for-the-badge&logo=youtube" /></a>
-  <a href="https://lexscout-production.up.railway.app/docs"><img src="https://img.shields.io/badge/%F0%9F%93%84%20API%20Docs-Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=000" /></a>
-  <a href="https://lexscout-production.up.railway.app/health"><img src="https://img.shields.io/badge/%E2%9C%85%20API%20Health-Live-00e5a0?style=for-the-badge" /></a>
+  <a href="https://lexscout.onrender.com/docs"><img src="https://img.shields.io/badge/%F0%9F%93%84%20API%20Docs-Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=000" /></a>
+  <a href="https://lexscout.onrender.com/health"><img src="https://img.shields.io/badge/%E2%9C%85%20API%20Health-Live-00e5a0?style=for-the-badge" /></a>
 </p>
 
 <br/>
@@ -422,7 +422,7 @@ curl -X POST http://localhost:8000/query `
 2. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub** → `ashish-doing/lexscout`
 3. Railway reads `backend/railway.toml` automatically
 4. Add env vars: `GROQ_API_KEY` + `AIML_API_KEY` + `SPEECHMATICS_API_KEY` + `BRIGHT_DATA_API_KEY` + zone names
-5. Live URL: **[https://lexscout-production.up.railway.app](https://lexscout-production.up.railway.app)**
+5. Live URL: **[https://lexscout.onrender.com](https://lexscout.onrender.com)**
 
 ### Render.com (alternative)
 
